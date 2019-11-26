@@ -12,8 +12,5 @@ export interface Manifest {
   name: string;
   version: string;
   description: string;
-  bin: {
-    [bin: string]: string;
-  };
   [key: string]: unknown;
 }

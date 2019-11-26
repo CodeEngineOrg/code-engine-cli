@@ -34,11 +34,7 @@
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "bin": {
-    "code-engine": "bin/code-engine.js"
-  },
   "files": [
-    "bin",
     "lib"
   ],
   "scripts": {
