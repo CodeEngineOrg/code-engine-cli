@@ -1,10 +1,11 @@
-import { main } from "./cli";
+import { CodeEngineCLI } from "./cli";
 
-export { main };
+export { Config } from "./config";
+export { CodeEngineCLI };
 
-// Export `main` as the default export
+// Export `CodeEngineCLI` as the default export
 // tslint:disable: no-default-export
-export default main;
+export default CodeEngineCLI;
 
 // CommonJS default export hack
 if (typeof module === "object" && typeof module.exports === "object") {
