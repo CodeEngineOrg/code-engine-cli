@@ -29,7 +29,7 @@ export class CodeEngineCLI {
    *
    * @param args - The command-line arguments
    */
-  public main(args: string[] = []): void {
+  public async main(args: string[] = []): Promise<void> {
     try {
       let { help, version, quiet, options } = this._parseArgs(args);
 
@@ -45,10 +45,14 @@ export class CodeEngineCLI {
       }
       else if (options) {
         let engine = new CodeEngine();
+        let summary = await engine.build();
 
         if (!quiet) {
-          this.log("Code Engine created successfully!");
+          this.log(JSON.stringify(summary, undefined, 2));
         }
+
+        await engine.dispose();
+        this._process.exit(ExitCode.Success);
       }
     }
     catch (error) {
