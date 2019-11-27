@@ -1,12 +1,10 @@
 import { manifest } from "./manifest";
 
-const cli = Object.keys(manifest.bin)[0];
-
 /**
  * Text explaining how to use the CLI
  */
 export const usageText = `
-Usage: ${cli} [options] [files...]
+Usage: code-engine [options] [files...]
 
 options:
   -v, --version             Show the version number
@@ -23,5 +21,5 @@ files...
  * Text describing the program and how to use it
  */
 export const helpText = `
-${manifest.name} - ${manifest.description}
+CodeEngine - ${manifest.description}
 ${usageText}`;
