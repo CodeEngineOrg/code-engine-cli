@@ -7,6 +7,7 @@ export interface ParsedArgs {
   help: boolean;
   version: boolean;
   quiet: boolean;
+  options: {};
 }
 
 /**
@@ -26,5 +27,6 @@ export function parseArgs(argv: string[]): ParsedArgs {
     help: Boolean(args.help),
     version: Boolean(args.version),
     quiet: Boolean(args.quiet),
+    options: {},
   };
 }

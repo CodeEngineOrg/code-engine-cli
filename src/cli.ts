@@ -31,7 +31,7 @@ export class CodeEngineCLI {
    */
   public main(args: string[] = []): void {
     try {
-      let { help, version, quiet } = this._parseArgs(args);
+      let { help, version, quiet, options } = this._parseArgs(args);
 
       if (help) {
         // Show the help text and exit
@@ -43,7 +43,7 @@ export class CodeEngineCLI {
         this.log(manifest.version);
         this._process.exit(ExitCode.Success);
       }
-      else {
+      else if (options) {
         let engine = new CodeEngine();
 
         if (!quiet) {
@@ -89,6 +89,9 @@ export class CodeEngineCLI {
       let message = String((error as Error).message || error);
       this._process.stderr.write(`${message}\n${usageText}`);
       this._process.exit(ExitCode.InvalidArgument);
+
+      // @ts-ignore - Return an empty object for tests
+      return {};
     }
   }
 }
