@@ -1,109 +1,97 @@
 "use strict";
 
-const codeEngine = require("../utils/code-engine");
-const manifest = require("../../package.json");
+const CodeEngineCLI = require("../../");
+const MockProcess = require("../utils/process");
 const { expect } = require("chai");
+const sinon = require("sinon");
 
-describe("code-engine", () => {
+const nodeProcess = process;
 
-  it("should run without any arguments", () => {
-    // Run the CLI without any arguments.
-    let cli = codeEngine("");
+describe("CodeEngineCLI", () => {
 
-    // It should have printed the default greeting
-    expect(cli).to.have.stdout("CodeEngine {}\n");
+  describe("constructor", () => {
+    beforeEach(() => {
+      global.process = new MockProcess();
+    });
+
+    afterEach(() => {
+      global.process = nodeProcess;
+    });
+
+    it("should work without any arguments", () => {
+      let cli = new CodeEngineCLI();
+      expect(cli).to.be.an.instanceOf(CodeEngineCLI);
+
+      // Make sure it used the correct Process object
+      sinon.assert.calledOnce(global.process.setTitle);
+    });
+
+    it("should work without an empty argument", () => {
+      let cli = new CodeEngineCLI({});
+      expect(cli).to.be.an.instanceOf(CodeEngineCLI);
+
+      // Make sure it used the correct Process object
+      sinon.assert.calledOnce(global.process.setTitle);
+    });
+
+    it("should set the title of the global Process object", () => {
+      // eslint-disable-next-line no-unused-vars
+      let cli = new CodeEngineCLI();
+
+      sinon.assert.calledOnce(global.process.setTitle);
+      sinon.assert.calledWith(global.process.setTitle, "CodeEngine");
+    });
+
+    it("should set the title of the given Process object", () => {
+      let process = new MockProcess();
+
+      // eslint-disable-next-line no-unused-vars
+      let cli = new CodeEngineCLI({ process });
+
+      sinon.assert.calledOnce(process.setTitle);
+      sinon.assert.calledWith(process.setTitle, "CodeEngine");
+
+      sinon.assert.notCalled(global.process.setTitle);
+    });
   });
 
-  it("should error if an invalid argument is used", () => {
-    let cli = codeEngine("--fizzbuzz");
+  describe("main()", () => {
+    it("can be called without any arguments", async () => {
+      let process = new MockProcess();
+      let cli = new CodeEngineCLI({ process });
 
-    expect(cli).to.have.exitCode(9);
-    expect(cli).to.have.stdout("");
-    expect(cli).to.have.stderr.that.matches(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] \[files...\]\n/);
+      await cli.main();
+
+      sinon.assert.calledOnce(process.exit);
+      sinon.assert.calledWith(process.exit, 0);
+    });
+
+    it("should error and print usage text if an invalid argument is used", async () => {
+      let process = new MockProcess();
+      let cli = new CodeEngineCLI({ process });
+
+      await cli.main(["--fizzbuzz"]);
+
+      sinon.assert.calledOnce(process.exit);
+      sinon.assert.calledWith(process.exit, 9);
+
+      sinon.assert.notCalled(process.stdout.write);
+      sinon.assert.calledOnce(process.stderr.write);
+      expect(process.stderr.write.firstCall.args[0]).to.match(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] /);
+    });
+
+    it("should error and print usage text if an invalid shorthand argument is used", async () => {
+      let process = new MockProcess();
+      let cli = new CodeEngineCLI({ process });
+
+      await cli.main(["-qhzt"]);
+
+      sinon.assert.calledOnce(process.exit);
+      sinon.assert.calledWith(process.exit, 9);
+
+      sinon.assert.notCalled(process.stdout.write);
+      sinon.assert.calledOnce(process.stderr.write);
+      expect(process.stderr.write.firstCall.args[0]).to.match(/^Unknown option: -z\n\nUsage: code-engine \[options\] /);
+    });
   });
-
-  it("should error if an invalid shorthand argument is used", () => {
-    let cli = codeEngine("-qhzt");
-
-    expect(cli).to.have.exitCode(9);
-    expect(cli).to.have.stdout("");
-    expect(cli).to.have.stderr.that.matches(/^Unknown option: -z\n\nUsage: code-engine \[options\] \[files...\]\n/);
-  });
-
-});
-
-describe("code-engine --help", () => {
-
-  it("should show usage text", () => {
-    let cli = codeEngine("--help");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout.that.contains(manifest.description);
-    expect(cli).to.have.stdout.that.matches(/\nUsage: code-engine \[options\] \[files...\]\n/);
-  });
-
-  it("should support -h shorthand", () => {
-    let cli = codeEngine("-h");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout.that.contains(manifest.description);
-    expect(cli).to.have.stdout.that.matches(/\nUsage: code-engine \[options\] \[files...\]\n/);
-  });
-
-  it("should ignore other arguments", () => {
-    let cli = codeEngine("--quiet --help --version");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout.that.contains(manifest.description);
-    expect(cli).to.have.stdout.that.matches(/\nUsage: code-engine \[options\] \[files...\]\n/);
-  });
-
-  it("should ignore other shorthand arguments", () => {
-    let cli = codeEngine("-qhv");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout.that.contains(manifest.description);
-    expect(cli).to.have.stdout.that.matches(/\nUsage: code-engine \[options\] \[files...\]\n/);
-  });
-
-});
-
-describe("code-engine --version", () => {
-
-  it("should show the version number", () => {
-    let cli = codeEngine("--version");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout(manifest.version + "\n");
-  });
-
-  it("should support -v shorthand", () => {
-    let cli = codeEngine("-v");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout(manifest.version + "\n");
-  });
-
-  it("should ignore other arguments", () => {
-    let cli = codeEngine("--quiet --version");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout(manifest.version + "\n");
-  });
-
-  it("should ignore other shorthand arguments", () => {
-    let cli = codeEngine("-qv");
-
-    expect(cli).to.have.exitCode(0);
-    expect(cli).to.have.stderr("");
-    expect(cli).to.have.stdout(manifest.version + "\n");
-  });
-
 });
