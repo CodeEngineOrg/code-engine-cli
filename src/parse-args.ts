@@ -4,10 +4,15 @@ import * as commandLineArgs from "command-line-args";
  * The parsed command-line arguments
  */
 export interface ParsedArgs {
-  help: boolean;
-  version: boolean;
+  dev: boolean;
+  watch: boolean;
+  serve: boolean;
+  debug: boolean;
   quiet: boolean;
-  options: {};
+  version: boolean;
+  help: boolean;
+  generator: string;
+  sources: string[];
 }
 
 /**
@@ -16,17 +21,30 @@ export interface ParsedArgs {
 export function parseArgs(argv: string[]): ParsedArgs {
   let args = commandLineArgs(
     [
+      { name: "dev", type: Boolean },
+      { name: "watch", alias: "w", type: Boolean },
+      { name: "serve", alias: "s", type: Boolean },
+      { name: "debug", alias: "d", type: Boolean },
       { name: "quiet", alias: "q", type: Boolean },
       { name: "version", alias: "v", type: Boolean },
       { name: "help", alias: "h", type: Boolean },
+      { name: "positionals", type: String, defaultValue: [], multiple: true, defaultOption: true },
     ],
     { argv }
   );
 
+  // Positional arguments
+  let [generator, ...sources] = args.positionals as string[];
+
   return {
-    help: Boolean(args.help),
-    version: Boolean(args.version),
+    dev: Boolean(args.dev),
+    watch: Boolean(args.watch),
+    serve: Boolean(args.serve),
+    debug: Boolean(args.debug),
     quiet: Boolean(args.quiet),
-    options: {},
+    version: Boolean(args.version),
+    help: Boolean(args.help),
+    generator,
+    sources,
   };
 }

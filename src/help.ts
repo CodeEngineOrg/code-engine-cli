@@ -19,17 +19,31 @@ export const bannerText =
  * Text explaining how to use the CLI
  */
 export const usageText = `
-Usage: code-engine [options] [files...]
+Usage: code-engine [options] [generator] [sources...]
 
 options:
-  -v, --version             Show the version number
+  --dev                 Build for local development insted of production
 
-  -q, --quiet               Suppress unnecessary output
+  -w, --watch           Watch source files and automatically re-build when changed
 
-  -h, --help                Show usage information
+  -s, --serve           Start a local web server to serve the generated website.
+                        Combine with --watch to also start a LiveReload server.
 
-files...
-  One or more files and/or globs to process (ex: README.md *.txt docs/**/*).
+  -d, --debug           Enable verbose debug logging
+
+  -q, --quiet           Suppress unnecessary output
+
+  -v, --version         Show the version number
+
+  -h, --help            Show usage information
+
+generator:
+  The name or path of the CodeEngine generator to run. Generators are Node
+  packages that export a CodeEngine Config object. Defaults to "./"
+
+sources...
+  One or more files, directories, and/or globs to process (eg: README.md *.txt docs/**/*).
+  Defaults to all files in the current directory and subdirectories (i.e. **/*)
 `;
 
 /**
