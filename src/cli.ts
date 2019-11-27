@@ -30,33 +30,36 @@ export class CodeEngineCLI {
    * @param args - The command-line arguments
    */
   public async main(args: string[] = []): Promise<void> {
-    try {
-      let { help, version, quiet, options } = this._parseArgs(args);
+    let parsedArgs = this._parseArgs(args);
 
-      if (help) {
-        // Show the help text and exit
-        this.log(helpText);
-        this._process.exit(ExitCode.Success);
-      }
-      else if (version) {
-        // Show the version number and exit
-        this.log(manifest.version);
-        this._process.exit(ExitCode.Success);
-      }
-      else if (options) {
-        let engine = new CodeEngine();
-        let summary = await engine.build();
+    if (parsedArgs) {
+      try {
+        let { help, version, quiet } = parsedArgs;
 
-        if (!quiet) {
-          this.log(JSON.stringify(summary, undefined, 2));
+        if (help) {
+          // Show the help text and exit
+          this.log(helpText);
+        }
+        else if (version) {
+          // Show the version number and exit
+          this.log(manifest.version);
+        }
+        else {
+          let engine = new CodeEngine();
+          let summary = await engine.build();
+
+          if (!quiet) {
+            this.log(JSON.stringify(summary, undefined, 2));
+          }
+
+          await engine.dispose();
         }
 
-        await engine.dispose();
         this._process.exit(ExitCode.Success);
       }
-    }
-    catch (error) {
-      this.crash(error as Error);
+      catch (error) {
+        this.crash(error as Error);
+      }
     }
   }
 
@@ -85,17 +88,14 @@ export class CodeEngineCLI {
   /**
    * Parses the command-line arguments, or prints usage text if the args are invalid.
    */
-  private _parseArgs(args: string[]): ParsedArgs {
+  private _parseArgs(args: string[]): ParsedArgs | undefined {
     try {
       return parseArgs(args);
     }
     catch (error) {
       let message = String((error as Error).message || error);
       this._process.stderr.write(`${message}\n${usageText}`);
-      this._process.exit(ExitCode.InvalidArgument);
-
-      // @ts-ignore - Return an empty object for tests
-      return {};
+      return this._process.exit(ExitCode.InvalidArgument) as undefined;
     }
   }
 }

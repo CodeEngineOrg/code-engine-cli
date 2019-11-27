@@ -77,7 +77,7 @@ describe("CodeEngineCLI", () => {
 
       sinon.assert.notCalled(process.stdout.write);
       sinon.assert.calledOnce(process.stderr.write);
-      expect(process.stderr.write.firstCall.args[0]).to.match(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] /);
+      sinon.assert.calledWith(process.stderr.write, sinon.match(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] /));
     });
 
     it("should error and print usage text if an invalid shorthand argument is used", async () => {
@@ -91,7 +91,7 @@ describe("CodeEngineCLI", () => {
 
       sinon.assert.notCalled(process.stdout.write);
       sinon.assert.calledOnce(process.stderr.write);
-      expect(process.stderr.write.firstCall.args[0]).to.match(/^Unknown option: -z\n\nUsage: code-engine \[options\] /);
+      sinon.assert.calledWith(process.stderr.write, sinon.match(/^Unknown option: -z\n\nUsage: code-engine \[options\] /));
     });
   });
 });
