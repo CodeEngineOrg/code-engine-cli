@@ -36,12 +36,12 @@ export class CodeEngineCLI {
       if (help) {
         // Show the help text and exit
         this.log(helpText);
-        process.exit(ExitCode.Success);
+        this._process.exit(ExitCode.Success);
       }
       else if (version) {
         // Show the version number and exit
         this.log(manifest.version);
-        process.exit(ExitCode.Success);
+        this._process.exit(ExitCode.Success);
       }
       else {
         let engine = new CodeEngine();
@@ -88,7 +88,7 @@ export class CodeEngineCLI {
     catch (error) {
       let message = String((error as Error).message || error);
       this._process.stderr.write(`${message}\n${usageText}`);
-      return process.exit(ExitCode.InvalidArgument);
+      this._process.exit(ExitCode.InvalidArgument);
     }
   }
 }
