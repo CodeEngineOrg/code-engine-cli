@@ -51,8 +51,9 @@
     "release": "npm run upgrade && npm run clean && npm run build && npm test && npm run bump"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=12.5"
   },
+  "engineStrict": true,
   "devDependencies": {
     "@code-engine/types": "0.0.3",
     "@types/chai": "^4.2.5",
