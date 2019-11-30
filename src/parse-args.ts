@@ -9,6 +9,7 @@ export interface ParsedArgs {
   serve: boolean;
   debug: boolean;
   quiet: boolean;
+  typeScript: boolean;
   version: boolean;
   help: boolean;
   generator: string;
@@ -26,6 +27,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
       { name: "serve", alias: "s", type: Boolean },
       { name: "debug", alias: "d", type: Boolean },
       { name: "quiet", alias: "q", type: Boolean },
+      { name: "no-typescript", alias: "T", type: Boolean },
       { name: "version", alias: "v", type: Boolean },
       { name: "help", alias: "h", type: Boolean },
       { name: "positionals", type: String, defaultValue: [], multiple: true, defaultOption: true },
@@ -42,9 +44,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
     serve: Boolean(args.serve),
     debug: Boolean(args.debug),
     quiet: Boolean(args.quiet),
+    typeScript: !args["no-typescript"],
     version: Boolean(args.version),
     help: Boolean(args.help),
-    generator,
+    generator: generator || ".",
     sources,
   };
 }

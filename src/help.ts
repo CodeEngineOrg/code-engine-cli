@@ -33,13 +33,16 @@ options:
 
   -q, --quiet           Suppress unnecessary output
 
+  -T, --no-typescript   Disables TypeScript support. The generator and all plugins
+                        must be written in plain JavaScript.
+
   -v, --version         Show the version number
 
   -h, --help            Show usage information
 
 generator:
-  The name or path of the CodeEngine generator to run. Generators are Node
-  packages that export a CodeEngine Config object. Defaults to "./"
+  The name or path of the CodeEngine generator to run. Generators are Node packages
+  that configure CodeEngine plugins, sources, destinations, etc. Defaults to "./"
 
 sources...
   One or more files, directories, and/or globs to process (eg: README.md *.txt docs/**/*).
