@@ -2,6 +2,7 @@
 
 const CodeEngineCLI = require("../../");
 const MockProcess = require("../utils/process");
+const createDir = require("../utils/create-dir");
 const { expect } = require("chai");
 const sinon = require("sinon");
 
@@ -57,11 +58,16 @@ describe("CodeEngineCLI", () => {
 
   describe("main()", () => {
     it("can be called without any arguments", async () => {
-      let process = new MockProcess();
+      let dir = await createDir([
+        { path: "index.js", contents: "module.exports = { source: '**/*' }" },
+      ]);
+
+      let process = new MockProcess(dir);
       let cli = new CodeEngineCLI({ process });
 
       await cli.main();
 
+      sinon.assert.notCalled(process.stderr.write);
       sinon.assert.calledOnce(process.exit);
       sinon.assert.calledWith(process.exit, 0);
     });

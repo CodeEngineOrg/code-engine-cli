@@ -6,8 +6,11 @@ const sinon = require("sinon");
  * A mock object that replaces Node's built-in `process` object.
  */
 module.exports = class MockProcess {
-  constructor () {
+  constructor (cwd = process.cwd()) {
     this.env = {};
+
+    this.cwd = sinon.stub().returns(cwd);
+
     this.stdout = {
       write: sinon.spy(),
     };
