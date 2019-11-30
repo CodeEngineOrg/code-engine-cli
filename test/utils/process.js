@@ -8,14 +8,27 @@ const sinon = require("sinon");
 module.exports = class MockProcess {
   constructor () {
     this.env = {};
-    this.on = sinon.spy();
-    this.exit = sinon.spy();
     this.stdout = {
       write: sinon.spy(),
     };
+
     this.stderr = {
       write: sinon.spy(),
     };
+
+    let exitHandlers = [];
+
+    this.on = sinon.spy((event, handler) => {
+      if (event === "exit") {
+        exitHandlers.push(handler);
+      }
+    });
+
+    this.exit = sinon.spy((code) => {
+      for (let handler of exitHandlers) {
+        handler(code);
+      }
+    });
 
     this.setTitle = sinon.spy();
     this.getTitle = sinon.stub().returns("CodeEngine");

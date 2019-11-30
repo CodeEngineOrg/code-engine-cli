@@ -70,6 +70,16 @@ export class CodeEngineCLI {
     this._process.stdout.write(`${message}\n`);
   }
 
+
+  /**
+   * Waits for the program to be terminated.
+   */
+  public async awaitExit(): Promise<void> {
+    await new Promise((resolve) => {
+      this._process.on("exit", resolve);
+    });
+  }
+
   /**
    * Immediately terminates the process with the given error.
    */
