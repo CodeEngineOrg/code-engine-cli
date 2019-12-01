@@ -61,6 +61,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.14",
     "chai": "^4.2.0",
+    "chai-fs": "^2.0.0",
     "coveralls": "^3.0.9",
     "eslint": "^6.7.2",
     "eslint-config-modular": "^7.0.0",
@@ -78,7 +79,6 @@
   },
   "dependencies": {
     "@code-engine/lib": "0.0.8",
-    "@code-engine/stringify": "0.0.1",
     "@code-engine/utils": "0.0.9",
     "@code-engine/validate": "0.0.1",
     "code-engine-destination-filesystem": "0.0.3",
