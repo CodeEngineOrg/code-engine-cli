@@ -1,6 +1,6 @@
 {
   "name": "@code-engine/cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "build tool | code generator | static site builder",
   "keywords": [
     "build-tool",
@@ -81,7 +81,7 @@
     "@code-engine/lib": "0.0.8",
     "@code-engine/utils": "0.0.9",
     "@code-engine/validate": "0.0.1",
-    "code-engine-destination-filesystem": "0.0.3",
+    "code-engine-destination-filesystem": "0.0.4",
     "code-engine-source-filesystem": "0.0.3",
     "command-line-args": "^5.1.1",
     "filesize": "^6.0.1",
