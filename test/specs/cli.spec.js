@@ -89,5 +89,44 @@ describe("CodeEngineCLI", () => {
       process.assert.stdout("");
       process.assert.stderr(/^Unknown option: -z\n\nUsage: code-engine \[options\] /);
     });
+
+    it("should print the error stack trace if DEBUG is enabled", async () => {
+      let dir = await createDir();
+      let process = new MockProcess(dir);
+      process.env.DEBUG = "true";
+      let cli = new CodeEngineCLI({ process });
+
+      // Explicitly specifying a generator that doesn't exist
+      await cli.main(["my-generator"]);
+
+      process.assert.exitCode(1);
+      process.assert.stderr(/^Error: Cannot find the CodeEngine generator: my-generator\n    at resolveGenerator /);
+    });
+
+    it('should print the error stack trace if NODE_ENV is set to "development"', async () => {
+      let dir = await createDir();
+      let process = new MockProcess(dir);
+      process.env.NODE_ENV = "development";
+      let cli = new CodeEngineCLI({ process });
+
+      // Explicitly specifying a generator that doesn't exist
+      await cli.main(["my-generator"]);
+
+      process.assert.exitCode(1);
+      process.assert.stderr(/^Error: Cannot find the CodeEngine generator: my-generator\n    at resolveGenerator /);
+    });
+
+    it('should NOT print the error stack trace if NODE_ENV is set to "production"', async () => {
+      let dir = await createDir();
+      let process = new MockProcess(dir);
+      process.env.NODE_ENV = "production";
+      let cli = new CodeEngineCLI({ process });
+
+      // Explicitly specifying a generator that doesn't exist
+      await cli.main(["my-generator"]);
+
+      process.assert.exitCode(1);
+      process.assert.stderr("Cannot find the CodeEngine generator: my-generator\n");
+    });
   });
 });

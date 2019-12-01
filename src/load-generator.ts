@@ -64,7 +64,7 @@ async function importGenerator(moduleId: string, path: string): Promise<Generato
     exports = await importModule(path);
   }
   catch (error) {
-    throw ono(error, `Error in CodeEngine generator: "${moduleId}"`);
+    throw ono(error, `Error in CodeEngine generator: ${moduleId}`);
   }
 
   // The generator can be exported as the default export or a named export

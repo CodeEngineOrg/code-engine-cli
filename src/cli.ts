@@ -82,7 +82,7 @@ export class CodeEngineCLI {
       message = String(error.stack) || message;
     }
 
-    this._process.stderr.write(`${message}\n`);
+    this.error(message);
     this._process.exit(ExitCode.FatalError);
   }
 
@@ -104,7 +104,7 @@ export class CodeEngineCLI {
     }
     catch (error) {
       let message = String((error as Error).message || error);
-      this._process.stderr.write(`${message}\n${usageText}`);
+      this.error(`${message}\n${usageText}`);
       return this._process.exit(ExitCode.InvalidArgument) as undefined;
     }
   }

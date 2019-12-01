@@ -143,4 +143,60 @@ describe("code-engine [generator]", () => {
     expect(join(dir, "output/file.txt")).to.be.a.file().with.contents("Hello, world!");
   });
 
+  it("should error if the default directory is not a generator", async () => {
+    let dir = await createDir();
+    let process = new MockProcess(dir);
+    let cli = new CodeEngineCLI({ process });
+
+    // Defaulting to the current directory, which has no generator
+    await cli.main();
+
+    process.assert.exitCode(1);
+    process.assert.stderr("Cannot find the CodeEngine generator: .\n");
+  });
+
+  it("should error if the specified generator doesn't exist", async () => {
+    let dir = await createDir();
+    let process = new MockProcess(dir);
+    let cli = new CodeEngineCLI({ process });
+
+    // Explicitly specifying a generator that doesn't exist
+    await cli.main(["my-generator"]);
+
+    process.assert.exitCode(1);
+    process.assert.stderr("Cannot find the CodeEngine generator: my-generator\n");
+  });
+
+  it("should error if the generator has a syntax error", async () => {
+    let dir = await createDir([
+      {
+        path: "node_modules/my-generator/index.js",
+        contents: "Hello World"
+      }
+    ]);
+
+    let process = new MockProcess(dir);
+    let cli = new CodeEngineCLI({ process });
+    await cli.main(["my-generator"]);
+
+    process.assert.exitCode(1);
+    process.assert.stderr("Error in CodeEngine generator: my-generator \nUnexpected identifier\n");
+  });
+
+  it("should error if the specified package isn't a generator", async () => {
+    let dir = await createDir([
+      {
+        path: "node_modules/my-generator/index.js",
+        contents: "module.exports = Math.PI"
+      }
+    ]);
+
+    let process = new MockProcess(dir);
+    let cli = new CodeEngineCLI({ process });
+    await cli.main(["my-generator"]);
+
+    process.assert.exitCode(1);
+    process.assert.stderr("Invalid CodeEngine generator: 3.141592653589793. Expected an object.\n");
+  });
+
 });
