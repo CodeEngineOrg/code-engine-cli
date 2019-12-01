@@ -58,10 +58,7 @@ describe("CodeEngineCLI", () => {
 
   describe("main()", () => {
     it("can be called without any arguments", async () => {
-      let dir = await createDir([
-        { path: "index.js", contents: "module.exports = { source: '**/*' }" },
-      ]);
-
+      let dir = await createDir(["index.js"]);
       let process = new MockProcess(dir);
       let cli = new CodeEngineCLI({ process });
 
