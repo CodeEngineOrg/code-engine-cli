@@ -4,6 +4,7 @@ import { bannerText, helpText, usageText } from "./help";
 import { loadGenerator } from "./load-generator";
 import { manifest } from "./manifest";
 import { parseArgs, ParsedArgs } from "./parse-args";
+import { runGenerator } from "./run-generator";
 
 /**
  * The CodeEngine command-line interface.
@@ -45,6 +46,7 @@ export class CodeEngineCLI {
         else {
           this.log(bannerText);
           let generator = await loadGenerator(this._process.cwd(), options);
+          await runGenerator(generator, this, options);
         }
 
         this._process.exit(ExitCode.Success);
