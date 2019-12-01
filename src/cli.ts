@@ -1,7 +1,7 @@
-import { CodeEngine } from "@code-engine/lib";
 import { Config } from "./config";
 import { ExitCode } from "./exit-code";
-import { helpText, usageText } from "./help";
+import { bannerText, helpText, usageText } from "./help";
+import { loadGenerator } from "./load-generator";
 import { manifest } from "./manifest";
 import { parseArgs, ParsedArgs } from "./parse-args";
 
@@ -30,29 +30,21 @@ export class CodeEngineCLI {
    * @param args - The command-line arguments
    */
   public async main(args: string[] = []): Promise<void> {
-    let parsedArgs = this._parseArgs(args);
+    let options = this._parseArgs(args);
 
-    if (parsedArgs) {
+    if (options) {
       try {
-        let { help, version, quiet } = parsedArgs;
-
-        if (help) {
+        if (options.help) {
           // Show the help text and exit
           this.log(helpText);
         }
-        else if (version) {
+        else if (options.version) {
           // Show the version number and exit
           this.log(manifest.version);
         }
         else {
-          let engine = new CodeEngine();
-          let summary = await engine.build();
-
-          if (!quiet) {
-            this.log(JSON.stringify(summary, undefined, 2));
-          }
-
-          await engine.dispose();
+          this.log(bannerText);
+          let generator = await loadGenerator(this._process.cwd(), options);
         }
 
         this._process.exit(ExitCode.Success);
@@ -70,14 +62,11 @@ export class CodeEngineCLI {
     this._process.stdout.write(`${message}\n`);
   }
 
-
   /**
-   * Waits for the program to be terminated.
+   * Logs a message to stderr.
    */
-  public async awaitExit(): Promise<void> {
-    await new Promise((resolve) => {
-      this._process.on("exit", resolve);
-    });
+  public error(message: string): void {
+    this._process.stderr.write(`${message}\n`);
   }
 
   /**
@@ -93,6 +82,15 @@ export class CodeEngineCLI {
 
     this._process.stderr.write(`${message}\n`);
     this._process.exit(ExitCode.FatalError);
+  }
+
+  /**
+   * Waits for the program to be terminated.
+   */
+  public async awaitExit(): Promise<void> {
+    await new Promise((resolve) => {
+      this._process.on("exit", resolve);
+    });
   }
 
   /**
