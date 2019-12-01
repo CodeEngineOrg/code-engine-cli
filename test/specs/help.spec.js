@@ -3,7 +3,7 @@
 const CodeEngineCLI = require("../../");
 const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
-const sinon = require("sinon");
+const { expect } = require("chai");
 
 describe("code-engine --help", () => {
 
@@ -12,13 +12,10 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["--help"]);
 
-    sinon.assert.calledOnce(process.exit);
-    sinon.assert.calledWith(process.exit, 0);
-
-    sinon.assert.notCalled(process.stderr.write);
-    sinon.assert.calledOnce(process.stdout.write);
-    sinon.assert.calledWith(process.stdout.write, sinon.match(manifest.description));
-    sinon.assert.calledWith(process.stdout.write, sinon.match(/\nUsage: code-engine \[options\] /));
+    process.assert.exitCode(0);
+    process.assert.stderr("");
+    process.assert.stdout(/\nUsage: code-engine \[options\] /);
+    expect(process.stdout.text).to.include(manifest.description);
   });
 
   it("should support -h shorthand", async () => {
@@ -26,13 +23,10 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["-h"]);
 
-    sinon.assert.calledOnce(process.exit);
-    sinon.assert.calledWith(process.exit, 0);
-
-    sinon.assert.notCalled(process.stderr.write);
-    sinon.assert.calledOnce(process.stdout.write);
-    sinon.assert.calledWith(process.stdout.write, sinon.match(manifest.description));
-    sinon.assert.calledWith(process.stdout.write, sinon.match(/\nUsage: code-engine \[options\] /));
+    process.assert.exitCode(0);
+    process.assert.stderr("");
+    process.assert.stdout(/\nUsage: code-engine \[options\] /);
+    expect(process.stdout.text).to.include(manifest.description);
   });
 
   it("should ignore other arguments", async () => {
@@ -40,13 +34,10 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["--quiet", "--version", "--help"]);
 
-    sinon.assert.calledOnce(process.exit);
-    sinon.assert.calledWith(process.exit, 0);
-
-    sinon.assert.notCalled(process.stderr.write);
-    sinon.assert.calledOnce(process.stdout.write);
-    sinon.assert.calledWith(process.stdout.write, sinon.match(manifest.description));
-    sinon.assert.calledWith(process.stdout.write, sinon.match(/\nUsage: code-engine \[options\] /));
+    process.assert.exitCode(0);
+    process.assert.stderr("");
+    process.assert.stdout(/\nUsage: code-engine \[options\] /);
+    expect(process.stdout.text).to.include(manifest.description);
   });
 
   it("should ignore other shorthand arguments", async () => {
@@ -54,13 +45,10 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["-qvh"]);
 
-    sinon.assert.calledOnce(process.exit);
-    sinon.assert.calledWith(process.exit, 0);
-
-    sinon.assert.notCalled(process.stderr.write);
-    sinon.assert.calledOnce(process.stdout.write);
-    sinon.assert.calledWith(process.stdout.write, sinon.match(manifest.description));
-    sinon.assert.calledWith(process.stdout.write, sinon.match(/\nUsage: code-engine \[options\] /));
+    process.assert.exitCode(0);
+    process.assert.stderr("");
+    process.assert.stdout(/\nUsage: code-engine \[options\] /);
+    expect(process.stdout.text).to.include(manifest.description);
   });
 
 });

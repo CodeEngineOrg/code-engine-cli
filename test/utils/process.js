@@ -1,6 +1,7 @@
 "use strict";
 
 const sinon = require("sinon");
+const { expect } = require("chai");
 
 /**
  * A mock object that replaces Node's built-in `process` object.
@@ -12,11 +13,17 @@ module.exports = class MockProcess {
     this.cwd = sinon.stub().returns(cwd);
 
     this.stdout = {
-      write: sinon.spy(),
+      text: "",
+      write (text) {
+        this.text += text;
+      }
     };
 
     this.stderr = {
-      write: sinon.spy(),
+      text: "",
+      write (text) {
+        this.text += text;
+      }
     };
 
     let exitHandlers = [];
@@ -40,5 +47,39 @@ module.exports = class MockProcess {
       get: this.getTitle,
       set: this.setTitle,
     });
+
+    this.assert = {
+      /**
+       * Asserts that the process exited with the specified code.
+       */
+      exitCode: (code) => {
+        sinon.assert.calledOnce(this.exit);
+        sinon.assert.calledWith(this.exit, code);
+      },
+
+      /**
+       * Asserts that the process produced the specified stdout output.
+       */
+      stdout: (stdout) => {
+        if (stdout instanceof RegExp) {
+          expect(this.stdout.text).to.match(stdout);
+        }
+        else {
+          expect(this.stdout.text).to.equal(stdout);
+        }
+      },
+
+      /**
+       * Asserts that the process produced the specified stderr output.
+       */
+      stderr: (stderr) => {
+        if (stderr instanceof RegExp) {
+          expect(this.stderr.text).to.match(stderr);
+        }
+        else {
+          expect(this.stderr.text).to.equal(stderr);
+        }
+      },
+    };
   }
 };

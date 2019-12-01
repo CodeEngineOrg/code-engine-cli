@@ -67,9 +67,8 @@ describe("CodeEngineCLI", () => {
 
       await cli.main();
 
-      sinon.assert.notCalled(process.stderr.write);
-      sinon.assert.calledOnce(process.exit);
-      sinon.assert.calledWith(process.exit, 0);
+      process.assert.exitCode(0);
+      process.assert.stderr("");
     });
 
     it("should error and print usage text if an invalid argument is used", async () => {
@@ -78,12 +77,9 @@ describe("CodeEngineCLI", () => {
 
       await cli.main(["--fizzbuzz"]);
 
-      sinon.assert.calledOnce(process.exit);
-      sinon.assert.calledWith(process.exit, 9);
-
-      sinon.assert.notCalled(process.stdout.write);
-      sinon.assert.calledOnce(process.stderr.write);
-      sinon.assert.calledWith(process.stderr.write, sinon.match(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] /));
+      process.assert.exitCode(9);
+      process.assert.stdout("");
+      process.assert.stderr(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] /);
     });
 
     it("should error and print usage text if an invalid shorthand argument is used", async () => {
@@ -92,12 +88,9 @@ describe("CodeEngineCLI", () => {
 
       await cli.main(["-qhzt"]);
 
-      sinon.assert.calledOnce(process.exit);
-      sinon.assert.calledWith(process.exit, 9);
-
-      sinon.assert.notCalled(process.stdout.write);
-      sinon.assert.calledOnce(process.stderr.write);
-      sinon.assert.calledWith(process.stderr.write, sinon.match(/^Unknown option: -z\n\nUsage: code-engine \[options\] /));
+      process.assert.exitCode(9);
+      process.assert.stdout("");
+      process.assert.stderr(/^Unknown option: -z\n\nUsage: code-engine \[options\] /);
     });
   });
 });
