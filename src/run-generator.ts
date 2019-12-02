@@ -11,20 +11,24 @@ import { ParsedArgs } from "./parse-args";
  */
 export async function runGenerator(generator: Generator, cli: CodeEngineCLI, options: ParsedArgs): Promise<void> {
   let engine = await createCodeEngine(generator, options);
-  setupEvents(engine, cli, options);
 
-  // Run a full build
-  await engine.build();
+  try {
+    setupEvents(engine, cli, options);
 
-  if (options.watch) {
-    // Watch sources for changes and re-build
-    engine.watch();
+    // Run a full build
+    await engine.build();
 
-    // Wait forever, or until the CLI exits
-    await cli.awaitExit();
+    if (options.watch) {
+      // Watch sources for changes and re-build
+      engine.watch();
+
+      // Wait forever, or until the CLI exits
+      await cli.awaitExit();
+    }
   }
-
-  await engine.dispose();
+  finally {
+    await engine.dispose();
+  }
 }
 
 /**
