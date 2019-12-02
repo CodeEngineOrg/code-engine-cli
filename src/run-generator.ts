@@ -11,9 +11,16 @@ import { ParsedArgs } from "./parse-args";
  * @internal
  */
 export async function runGenerator(generator: Generator, cli: CodeEngineCLI, options: ParsedArgs): Promise<void> {
-  let engine = await createCodeEngine(generator, options);
+  let engine = new CodeEngine({
+    cwd: generator.cwd,
+    concurrency: generator.concurrency,
+    watchDelay: generator.watch && generator.watch.delay,
+    debug: options.debug,
+    dev: options.dev,
+  });
 
   try {
+    await addPlugins(engine, generator, options);
     setupEvents(engine, cli, options);
 
     // Run a full build
@@ -33,17 +40,9 @@ export async function runGenerator(generator: Generator, cli: CodeEngineCLI, opt
 }
 
 /**
- * Creates a CodeEngine instance and adds the plugins that are specified by the generator
+ * Adds the CodeEngine plugins that are specified by the generator
  */
-async function createCodeEngine(generator: Generator, options: ParsedArgs) {
-  let engine = new CodeEngine({
-    cwd: generator.cwd,
-    concurrency: generator.concurrency,
-    watchDelay: generator.watch && generator.watch.delay,
-    debug: options.debug,
-    dev: options.dev,
-  });
-
+async function addPlugins(engine: CodeEngine, generator: Generator, options: ParsedArgs) {
   // Add file sources
   for (let source of arrayify(generator.source)) {
     if (typeof source === "string") {
