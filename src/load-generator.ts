@@ -1,7 +1,7 @@
 import { importModule, ModuleExports, resolveModule } from "@code-engine/utils";
 import { validate } from "@code-engine/validate";
 import { ono } from "ono";
-import { dirname } from "path";
+import { dirname, resolve } from "path";
 import { Generator } from "./generator";
 import { ParsedArgs } from "./parse-args";
 import { enableTypeScript } from "./typescript";
@@ -11,6 +11,7 @@ import { enableTypeScript } from "./typescript";
  */
 export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<Generator> {
   let generatorPath = resolveGenerator(cwd, options.generator);
+  let generatorDir = dirname(generatorPath);
 
   if (options.typeScript) {
     await enableTypeScript(generatorPath);
@@ -21,7 +22,12 @@ export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<G
   if (!generator.cwd) {
     // The "cwd" path defaults to the directory of the generator's main file.
     // This allows the generator to contain relative paths that resolve correctly.
-    generator.cwd = dirname(generatorPath);
+    generator.cwd = generatorDir;
+  }
+  else {
+    // Resolve the "cwd", relative to the generator's main file.
+    // This allows the generator to contain a relative "cwd" path.
+    generator.cwd = resolve(generatorDir, generator.cwd);
   }
 
   if (options.sources.length > 0) {
@@ -35,7 +41,7 @@ export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<G
 
   if (!generator.destination) {
     // Output to "./dist" by default
-    generator.destination = "./dist/";
+    generator.destination = resolve(cwd, "dist");
   }
 
   return generator;
