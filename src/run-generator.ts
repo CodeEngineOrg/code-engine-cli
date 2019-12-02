@@ -42,11 +42,10 @@ async function createCodeEngine(generator: Generator, options: ParsedArgs) {
   // Add file sources
   for (let source of arrayify(generator.source)) {
     if (typeof source === "string") {
-      await engine.use(filesystemSource({ path: source }));
+      source = filesystemSource({ path: source });
     }
-    else {
-      await engine.use(source);
-    }
+
+    await engine.use(source);
   }
 
   // Add plugins
@@ -57,11 +56,10 @@ async function createCodeEngine(generator: Generator, options: ParsedArgs) {
   // Add output destinations
   for (let destination of arrayify(generator.destination)) {
     if (typeof destination === "string") {
-      await engine.use(filesystemDestination({ path: destination }));
+      destination = filesystemDestination({ path: destination });
     }
-    else {
-      await engine.use(destination);
-    }
+
+    await engine.use(destination);
   }
 
   return engine;
