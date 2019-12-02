@@ -2,6 +2,7 @@ import * as commandLineArgs from "command-line-args";
 
 /**
  * The parsed command-line arguments
+ * @internal
  */
 export interface ParsedArgs {
   dev: boolean;
@@ -18,6 +19,7 @@ export interface ParsedArgs {
 
 /**
  * Parses the command-line arguments
+ * @internal
  */
 export function parseArgs(argv: string[]): ParsedArgs {
   let args = commandLineArgs(

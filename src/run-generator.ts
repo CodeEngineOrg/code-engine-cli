@@ -8,6 +8,7 @@ import { ParsedArgs } from "./parse-args";
 
 /**
  * Runs a CodeEngine generator, either once or in watch mode.
+ * @internal
  */
 export async function runGenerator(generator: Generator, cli: CodeEngineCLI, options: ParsedArgs): Promise<void> {
   let engine = await createCodeEngine(generator, options);

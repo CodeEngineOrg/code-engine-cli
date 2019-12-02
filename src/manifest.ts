@@ -1,5 +1,6 @@
 /**
  * The CodeEngine CLI manifest (package.json)
+ * @internal
  */
 // NOTE: We can't `import` the package.json file because it's outside of the "src" directory.
 // tslint:disable-next-line: no-var-requires no-require-imports
@@ -7,6 +8,7 @@ export const manifest = require("../package.json") as Manifest;
 
 /**
  * The npm package manifest (package.json)
+ * @internal
  */
 export interface Manifest {
   name: string;

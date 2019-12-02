@@ -2,6 +2,7 @@ import { manifest } from "./manifest";
 
 /**
  * Banner text displayed at startup
+ * @internal
  */
 export const bannerText =
   " ______            __          ______                                 \n" +
@@ -17,6 +18,7 @@ export const bannerText =
 
 /**
  * Text explaining how to use the CLI
+ * @internal
  */
 export const usageText = `
 Usage: code-engine [options] [generator] [sources...]
@@ -51,6 +53,7 @@ sources...
 
 /**
  * Text describing the program and how to use it
+ * @internal
  */
 export const helpText = `\n${bannerText}${usageText}`;
 

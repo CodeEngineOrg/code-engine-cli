@@ -6,6 +6,7 @@ import { ParsedArgs } from "./parse-args";
 
 /**
  * Sets-up event handlers for CodeEngine events and maps them to CLI behavior.
+ * @internal
  */
 export function setupEvents(engine: CodeEngine, cli: CodeEngineCLI, options: ParsedArgs) {
   engine.on(EventName.Error, cli.crash.bind(cli));

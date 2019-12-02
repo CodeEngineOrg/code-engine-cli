@@ -3,6 +3,7 @@ import { dirname } from "path";
 
 /**
  * Enables support for loading generators and plugins written in TypeScript.
+ * @internal
  */
 export async function enableTypeScript(generatorPath: string) {
   let [tsNode, tsConfig] = await Promise.all([

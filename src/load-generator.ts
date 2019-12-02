@@ -8,6 +8,7 @@ import { enableTypeScript } from "./typescript";
 
 /**
  * Loads the specified CodeEngine generator.
+ * @internal
  */
 export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<Generator> {
   let generatorPath = resolveGenerator(cwd, options.generator);
