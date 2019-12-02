@@ -74,9 +74,9 @@ describe("CodeEngineCLI", () => {
 
       await cli.main(["--fizzbuzz"]);
 
+      process.assert.stderr(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] /);
       process.assert.exitCode(9);
       process.assert.stdout("");
-      process.assert.stderr(/^Unknown option: --fizzbuzz\n\nUsage: code-engine \[options\] /);
     });
 
     it("should error and print usage text if an invalid shorthand argument is used", async () => {
@@ -85,9 +85,9 @@ describe("CodeEngineCLI", () => {
 
       await cli.main(["-qhzt"]);
 
+      process.assert.stderr(/^Unknown option: -z\n\nUsage: code-engine \[options\] /);
       process.assert.exitCode(9);
       process.assert.stdout("");
-      process.assert.stderr(/^Unknown option: -z\n\nUsage: code-engine \[options\] /);
     });
 
     it("should print the error stack trace if DEBUG is enabled", async () => {
@@ -99,8 +99,8 @@ describe("CodeEngineCLI", () => {
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["my-generator"]);
 
-      process.assert.exitCode(1);
       process.assert.stderr(/^Error: Cannot find the CodeEngine generator: my-generator\n    at resolveGenerator /);
+      process.assert.exitCode(1);
     });
 
     it('should print the error stack trace if NODE_ENV is set to "development"', async () => {
@@ -112,8 +112,8 @@ describe("CodeEngineCLI", () => {
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["my-generator"]);
 
-      process.assert.exitCode(1);
       process.assert.stderr(/^Error: Cannot find the CodeEngine generator: my-generator\n    at resolveGenerator /);
+      process.assert.exitCode(1);
     });
 
     it('should NOT print the error stack trace if NODE_ENV is set to "production"', async () => {
@@ -125,8 +125,8 @@ describe("CodeEngineCLI", () => {
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["my-generator"]);
 
-      process.assert.exitCode(1);
       process.assert.stderr("Cannot find the CodeEngine generator: my-generator\n");
+      process.assert.exitCode(1);
     });
   });
 });

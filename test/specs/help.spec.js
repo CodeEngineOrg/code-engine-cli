@@ -12,8 +12,8 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["--help"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(/\nUsage: code-engine \[options\] /);
     expect(process.stdout.text).to.include(manifest.description);
   });
@@ -23,8 +23,8 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["-h"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(/\nUsage: code-engine \[options\] /);
     expect(process.stdout.text).to.include(manifest.description);
   });
@@ -34,8 +34,8 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["--quiet", "--version", "--help"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(/\nUsage: code-engine \[options\] /);
     expect(process.stdout.text).to.include(manifest.description);
   });
@@ -45,8 +45,8 @@ describe("code-engine --help", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["-qvh"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(/\nUsage: code-engine \[options\] /);
     expect(process.stdout.text).to.include(manifest.description);
   });

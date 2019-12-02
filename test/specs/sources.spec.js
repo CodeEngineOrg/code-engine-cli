@@ -20,8 +20,8 @@ describe("code-engine [sources...]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main();
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "dist")).to.be.a.directory().with.deep.contents([
       "index.js",
@@ -59,8 +59,8 @@ describe("code-engine [sources...]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main();
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "dist")).to.be.a.directory().with.deep.contents([
       "file1.txt",
@@ -94,8 +94,8 @@ describe("code-engine [sources...]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main([".", "**/*.html"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "dist")).to.be.a.directory().with.deep.contents([
       "subdir",
@@ -122,8 +122,8 @@ describe("code-engine [sources...]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main([".", "*.txt", "**/*2.*", "*/*/*.html"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "dist")).to.be.a.directory().with.deep.contents([
       "file1.txt",
@@ -155,11 +155,11 @@ describe("code-engine [sources...]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main();
 
-    process.assert.exitCode(1);
     process.assert.stderr(
       "An error occurred in Filesystem Source while reading source files. \n" +
       `ENOENT: no such file or directory, stat '${join(dir, "file.txt")}'\n`
     );
+    process.assert.exitCode(1);
 
     expect(join(dir, "dist")).not.to.be.a.path();
   });
@@ -170,11 +170,11 @@ describe("code-engine [sources...]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main([".", "file.txt"]);
 
-    process.assert.exitCode(1);
     process.assert.stderr(
       "An error occurred in Filesystem Source while reading source files. \n" +
       `ENOENT: no such file or directory, stat '${join(dir, "file.txt")}'\n`
     );
+    process.assert.exitCode(1);
 
     expect(join(dir, "dist")).not.to.be.a.path();
   });

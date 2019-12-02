@@ -17,8 +17,8 @@ describe("code-engine [generator]", () => {
     // as the generator, the source, and the destination
     await cli.main();
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "dist")).to.be.a.directory().with.deep.contents(["index.js"]);
     expect(join(dir, "dist/index.js")).to.be.a.file().and.empty;
@@ -59,8 +59,8 @@ describe("code-engine [generator]", () => {
     // Explicitly specifying a generator directory path
     await cli.main(["./my-generator"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "output")).to.be.a.directory().with.deep.contents(["file.txt"]);
     expect(join(dir, "output/file.txt")).to.be.a.file().with.contents("Hello, world!");
@@ -94,8 +94,8 @@ describe("code-engine [generator]", () => {
     // Explicitly specifying a generator file path
     await cli.main(["./my-generator/lib/generator.js"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "output")).to.be.a.directory().with.deep.contents(["file.txt"]);
     expect(join(dir, "output/file.txt")).to.be.a.file().with.contents("Hello, world!");
@@ -136,8 +136,8 @@ describe("code-engine [generator]", () => {
     // Explicitly specifying a generator package name
     await cli.main(["my-generator"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
 
     expect(join(dir, "output")).to.be.a.directory().with.deep.contents(["file.txt"]);
     expect(join(dir, "output/file.txt")).to.be.a.file().with.contents("Hello, world!");
@@ -151,8 +151,8 @@ describe("code-engine [generator]", () => {
     // Defaulting to the current directory, which has no generator
     await cli.main();
 
-    process.assert.exitCode(1);
     process.assert.stderr("Cannot find the CodeEngine generator: .\n");
+    process.assert.exitCode(1);
   });
 
   it("should error if the specified generator doesn't exist", async () => {
@@ -163,8 +163,8 @@ describe("code-engine [generator]", () => {
     // Explicitly specifying a generator that doesn't exist
     await cli.main(["my-generator"]);
 
-    process.assert.exitCode(1);
     process.assert.stderr("Cannot find the CodeEngine generator: my-generator\n");
+    process.assert.exitCode(1);
   });
 
   it("should error if the generator has a syntax error", async () => {
@@ -179,8 +179,8 @@ describe("code-engine [generator]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["my-generator"]);
 
-    process.assert.exitCode(1);
     process.assert.stderr("Error in CodeEngine generator: my-generator \nUnexpected identifier\n");
+    process.assert.exitCode(1);
   });
 
   it("should error if the specified package isn't a generator", async () => {
@@ -195,8 +195,8 @@ describe("code-engine [generator]", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["my-generator"]);
 
-    process.assert.exitCode(1);
     process.assert.stderr("Invalid CodeEngine generator: 3.141592653589793. Expected an object.\n");
+    process.assert.exitCode(1);
   });
 
 });

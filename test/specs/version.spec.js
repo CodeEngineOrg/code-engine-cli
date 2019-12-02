@@ -11,8 +11,8 @@ describe("code-engine --version", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["--version"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(manifest.version + "\n");
   });
 
@@ -21,8 +21,8 @@ describe("code-engine --version", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["-v"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(manifest.version + "\n");
   });
 
@@ -31,8 +31,8 @@ describe("code-engine --version", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["--quiet", "--version"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(manifest.version + "\n");
   });
 
@@ -41,8 +41,8 @@ describe("code-engine --version", () => {
     let cli = new CodeEngineCLI({ process });
     await cli.main(["-qv"]);
 
-    process.assert.exitCode(0);
     process.assert.stderr("");
+    process.assert.exitCode(0);
     process.assert.stdout(manifest.version + "\n");
   });
 
