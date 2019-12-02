@@ -9,13 +9,23 @@ import { ParsedArgs } from "./parse-args";
  * @internal
  */
 export function setupEvents(engine: CodeEngine, cli: CodeEngineCLI, options: ParsedArgs) {
-  engine.on(EventName.Error, cli.crash.bind(cli));
+  engine.on(EventName.Error, error(cli, engine));
 
   if (!options.quiet) {
     engine.on(EventName.Log, log(cli, options));
     engine.on(EventName.BuildStarting, buildStarting(cli, options));
-    engine.on(EventName.BuildFinished, buildFinished(cli, options));
+    engine.on(EventName.BuildFinished, buildFinished(cli));
   }
+}
+
+/**
+ * Safely terminates the program when an error occurs in CodeEngine.
+ */
+function error(cli: CodeEngineCLI, engine: CodeEngine) {
+  return async (err: Error) => {
+    await engine.dispose();
+    cli.crash(err);
+  };
 }
 
 /**
@@ -62,7 +72,7 @@ function buildStarting(cli: CodeEngineCLI, options: ParsedArgs) {
 /**
  * Logs a summary of a finished build
  */
-function buildFinished(cli: CodeEngineCLI, options: ParsedArgs) {
+function buildFinished(cli: CodeEngineCLI) {
   return ({ input, output, time }: BuildFinishedEventData) => {
     let message =
     `input:  ${input.fileCount} files (${filesize(input.fileSize)})\n` +
