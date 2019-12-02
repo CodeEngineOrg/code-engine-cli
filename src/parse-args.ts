@@ -13,7 +13,7 @@ export interface ParsedArgs {
   typeScript: boolean;
   version: boolean;
   help: boolean;
-  generator: string;
+  generator: string | undefined;
   sources: string[];
 }
 
@@ -49,7 +49,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     typeScript: !args["no-typescript"],
     version: Boolean(args.version),
     help: Boolean(args.help),
-    generator: generator || ".",
+    generator,
     sources,
   };
 }

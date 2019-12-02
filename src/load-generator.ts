@@ -52,10 +52,11 @@ export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<G
  * Resolves the path of the specified CodeEngine generator
  */
 function resolveGenerator(cwd: string, moduleId: string): string {
-  let generatorPath = resolveModule(moduleId, cwd);
+  let generatorPath = resolveModule(options.generator || ".", cwd);
 
   if (!generatorPath) {
-    throw ono(`Cannot find the CodeEngine generator: ${moduleId}`);
+    throw ono(`Cannot find the CodeEngine generator: ${options.generator || dirname(cwd)}`);
+  }
   }
 
   return generatorPath;
@@ -64,14 +65,14 @@ function resolveGenerator(cwd: string, moduleId: string): string {
 /**
  * Imports the specified generator and returns it's exported `Generator` object.
  */
-async function importGenerator(moduleId: string, path: string): Promise<Generator> {
+async function importGenerator(moduleId: string | undefined, path: string): Promise<Generator> {
   let exports: ModuleExports;
 
   try {
     exports = await importModule(path);
   }
   catch (error) {
-    throw ono(error, `Error in CodeEngine generator: ${moduleId}`);
+    throw ono(error, `Error in CodeEngine generator: ${moduleId || path}`);
   }
 
   // The generator can be exported as the default export or a named export
