@@ -1,34 +1,45 @@
-import { importModule, ModuleExports, resolveModule } from "@code-engine/utils";
+import { importModule, ModuleExports, resolveModule, typedOno } from "@code-engine/utils";
 import { validate } from "@code-engine/validate";
 import { ono } from "ono";
 import { dirname, resolve } from "path";
+import { enableTypeScript } from "./enable-typescript";
 import { Generator } from "./generator";
 import { ParsedArgs } from "./parse-args";
-import { enableTypeScript } from "./typescript";
+
+/**
+ * A user-defined generator, with additional metadata
+ * @internal
+ */
+export interface LoadedGenerator extends Generator {
+  dir: string;
+  isTypeScript: boolean;
+}
 
 /**
  * Loads the specified CodeEngine generator.
  * @internal
  */
-export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<Generator> {
-  let generatorPath = resolveGenerator(cwd, options.generator);
-  let generatorDir = dirname(generatorPath);
+export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<LoadedGenerator> {
+  let path = resolveGenerator(cwd, options);
+  let dir = dirname(path);
+  let isTypeScript = /\.tsx?/.test(path);
 
-  if (options.typeScript) {
-    await enableTypeScript(generatorPath);
+  if (isTypeScript) {
+    // The generator is written in TypeScript, so enable TypeScript support
+    await enableTypeScript(dir);
   }
 
-  let generator = await importGenerator(options.generator, generatorPath);
+  let generator = await importGenerator(path, options.generator);
 
   if (!generator.cwd) {
     // The "cwd" path defaults to the directory of the generator's main file.
     // This allows the generator to contain relative paths that resolve correctly.
-    generator.cwd = generatorDir;
+    generator.cwd = dir;
   }
   else {
     // Resolve the "cwd", relative to the generator's main file.
     // This allows the generator to contain a relative "cwd" path.
-    generator.cwd = resolve(generatorDir, generator.cwd);
+    generator.cwd = resolve(dir, generator.cwd);
   }
 
   if (options.sources.length > 0) {
@@ -45,19 +56,27 @@ export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<G
     generator.destination = resolve(cwd, "dist");
   }
 
-  return generator;
+  return { ...generator, dir, isTypeScript };
 }
 
 /**
  * Resolves the path of the specified CodeEngine generator
  */
-function resolveGenerator(cwd: string, moduleId: string): string {
+function resolveGenerator(cwd: string, options: ParsedArgs): string {
+  // Temporarily register TypeScript file extensions.
+  // This allows the resolveModule() function to find TypeScript modules
+  require.extensions[".ts"] = dummyTypeScriptResolver;        // tslint:disable-line: deprecation
+  require.extensions[".tsx"] = dummyTypeScriptResolver;       // tslint:disable-line: deprecation
+
   let generatorPath = resolveModule(options.generator || ".", cwd);
 
   if (!generatorPath) {
     throw ono(`Cannot find the CodeEngine generator: ${options.generator || dirname(cwd)}`);
   }
-  }
+
+  // Remove the dummy TypeScript resolvers
+  delete require.extensions[".ts"];                           // tslint:disable-line: deprecation
+  delete require.extensions[".tsx"];                          // tslint:disable-line: deprecation
 
   return generatorPath;
 }
@@ -65,14 +84,14 @@ function resolveGenerator(cwd: string, moduleId: string): string {
 /**
  * Imports the specified generator and returns it's exported `Generator` object.
  */
-async function importGenerator(moduleId: string | undefined, path: string): Promise<Generator> {
+async function importGenerator(path: string, moduleId = path): Promise<Generator> {
   let exports: ModuleExports;
 
   try {
     exports = await importModule(path);
   }
   catch (error) {
-    throw ono(error, `Error in CodeEngine generator: ${moduleId || path}`);
+    throw typedOno(error, { moduleId }, `Error in CodeEngine generator: ${moduleId}`);
   }
 
   // The generator can be exported as the default export or a named export
@@ -81,6 +100,13 @@ async function importGenerator(moduleId: string | undefined, path: string): Prom
   // Make sure it's an object
   validate.type.object(generator, "CodeEngine generator");
 
-  // Shallow clone the generator so we can safely modify its properties
+  // Shallow clone the generator so we can safely add/modify properties
   return { ...generator };
+}
+
+/**
+ * A dummy TypeScript resolver that's used
+ */
+function dummyTypeScriptResolver(): void {
+  return;
 }

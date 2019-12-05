@@ -1,14 +1,17 @@
+// tslint:disable: no-default-export
 import * as findUp from "find-up";
 import { dirname } from "path";
+
+export { enableTypeScript };
 
 /**
  * Enables support for loading generators and plugins written in TypeScript.
  * @internal
  */
-export async function enableTypeScript(generatorPath: string) {
+export default async function enableTypeScript(generatorDir: string): Promise<void> {
   let [tsNode, tsConfig] = await Promise.all([
     import("ts-node"),
-    findTSConfig(generatorPath),
+    findTSConfig(generatorDir),
   ]);
 
   tsNode!.register({
@@ -34,7 +37,6 @@ export async function enableTypeScript(generatorPath: string) {
 /**
  * Finds the path of the "tsconfig.json" file, if any.
  */
-async function findTSConfig(generatorPath: string): Promise<string | undefined> {
-  let dir = dirname(generatorPath);
-  return findUp("tsconfig.json", { cwd: dir });
+async function findTSConfig(generatorDir: string): Promise<string | undefined> {
+  return findUp("tsconfig.json", { cwd: generatorDir });
 }

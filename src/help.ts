@@ -35,9 +35,6 @@ options:
 
   -q, --quiet           Suppress unnecessary output
 
-  -T, --no-typescript   Disables TypeScript support. The generator and all plugins
-                        must be written in plain JavaScript.
-
   -v, --version         Show the version number
 
   -h, --help            Show usage information

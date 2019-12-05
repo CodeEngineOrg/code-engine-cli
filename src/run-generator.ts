@@ -1,16 +1,18 @@
 import CodeEngine from "@code-engine/lib";
 import { filesystem as filesystemDestination } from "code-engine-destination-filesystem";
 import { filesystem as filesystemSource } from "code-engine-source-filesystem";
+import { join } from "path";
 import { CodeEngineCLI } from "./cli";
 import { setupEvents } from "./events";
 import { Generator } from "./generator";
+import { LoadedGenerator } from "./load-generator";
 import { ParsedArgs } from "./parse-args";
 
 /**
  * Runs a CodeEngine generator, either once or in watch mode.
  * @internal
  */
-export async function runGenerator(generator: Generator, cli: CodeEngineCLI, options: ParsedArgs): Promise<void> {
+export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCLI, options: ParsedArgs): Promise<void> {
   let engine = new CodeEngine({
     cwd: generator.cwd,
     concurrency: generator.concurrency,
@@ -20,6 +22,15 @@ export async function runGenerator(generator: Generator, cli: CodeEngineCLI, opt
   });
 
   try {
+    if (generator.isTypeScript) {
+      // Enable TypeScript in all CodeEngine worker threads
+      // to support plugins that are written in TypeScript
+      await engine.use({
+        moduleId: join(__dirname, "enable-typescript.js"),
+        data: generator.dir,
+      });
+    }
+
     await addPlugins(engine, generator, options);
     setupEvents(engine, cli, options);
 
