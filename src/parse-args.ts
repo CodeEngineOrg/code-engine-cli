@@ -7,7 +7,6 @@ import * as commandLineArgs from "command-line-args";
 export interface ParsedArgs {
   dev: boolean;
   watch: boolean;
-  serve: boolean;
   debug: boolean;
   quiet: boolean;
   version: boolean;
@@ -25,7 +24,6 @@ export function parseArgs(argv: string[]): ParsedArgs {
     [
       { name: "dev", type: Boolean },
       { name: "watch", alias: "w", type: Boolean },
-      { name: "serve", alias: "s", type: Boolean },
       { name: "debug", alias: "d", type: Boolean },
       { name: "quiet", alias: "q", type: Boolean },
       { name: "version", alias: "v", type: Boolean },
@@ -41,7 +39,6 @@ export function parseArgs(argv: string[]): ParsedArgs {
   return {
     dev: Boolean(args.dev),
     watch: Boolean(args.watch),
-    serve: Boolean(args.serve),
     debug: Boolean(args.debug),
     quiet: Boolean(args.quiet),
     version: Boolean(args.version),

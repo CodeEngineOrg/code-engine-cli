@@ -50,16 +50,6 @@ export interface Generator {
    * Configuration options for source file watchers.
    */
   watch?: WatchConfig;
-
-  /**
-   * Configuration options for CodeEngine's built-in web server.
-   */
-  serve?: HttpServerConfig;
-
-  /**
-   * Configuration options for CodeEngine's built-in LiveReload server.
-   */
-  liveReload?: LiveReloadConfig;
 }
 
 /**
@@ -73,52 +63,4 @@ export interface WatchConfig {
    * Defaults to 300ms.
    */
   delay?: number;
-}
-
-/**
- * Configuration options for CodeEngine's built-in web server.
- */
-export interface HttpServerConfig {
-  /**
-   * The port that the server is hosted on.
-   *
-   * Defaults to 8080.
-   */
-  port?: number;
-
-  /**
-   * The path at which the website is served.
-   *
-   * Defaults to "/"
-   */
-  path?: string;
-
-  /**
-   * Other options are passed directly to the `http.createServer()` and `express.static()` functions.
-   */
-  [key: string]: unknown;
-}
-
-/**
- * Configuration options for CodeEngine's built-in LiveReload server.
- */
-export interface LiveReloadConfig {
-  /**
-   * The port that the server is hosted on.
-   *
-   * Defaults to 35729.
-   */
-  port?: number;
-
-  /**
-   * The path at which the LiveReload server is served.
-   *
-   * Defaults to "/"
-   */
-  path?: string;
-
-  /**
-   * Other options are passed directly to the LiveReload server.
-   */
-  [key: string]: unknown;
 }

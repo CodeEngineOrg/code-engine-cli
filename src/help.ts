@@ -28,9 +28,6 @@ options:
 
   -w, --watch           Watch source files and automatically re-build when changed
 
-  -s, --serve           Start a local web server to serve the generated website.
-                        Combine with --watch to also start a LiveReload server.
-
   -d, --debug           Enable verbose debug logging
 
   -q, --quiet           Suppress unnecessary output
