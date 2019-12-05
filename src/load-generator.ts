@@ -2,17 +2,16 @@ import { importModule, ModuleExports, resolveModule, typedOno } from "@code-engi
 import { validate } from "@code-engine/validate";
 import { ono } from "ono";
 import { dirname, resolve } from "path";
-import { enableTypeScript } from "./enable-typescript";
 import { Generator } from "./generator";
 import { ParsedArgs } from "./parse-args";
+import { enableTranspiledLanguageSupport } from "./transpile-support";
 
 /**
  * A user-defined generator, with additional metadata
  * @internal
  */
 export interface LoadedGenerator extends Generator {
-  dir: string;
-  isTypeScript: boolean;
+  path: string;
 }
 
 /**
@@ -22,12 +21,9 @@ export interface LoadedGenerator extends Generator {
 export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<LoadedGenerator> {
   let path = resolveGenerator(cwd, options);
   let dir = dirname(path);
-  let isTypeScript = /\.tsx?/.test(path);
 
-  if (isTypeScript) {
-    // The generator is written in TypeScript, so enable TypeScript support
-    await enableTypeScript(dir);
-  }
+  // BEFORE importing the generator, enable support for compile-to-javascript languages
+  await enableTranspiledLanguageSupport(path);
 
   let generator = await importGenerator(path, options.generator);
 
@@ -56,7 +52,7 @@ export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<L
     generator.destination = resolve(cwd, "dist");
   }
 
-  return { ...generator, dir, isTypeScript };
+  return { ...generator, path };
 }
 
 /**
@@ -107,6 +103,4 @@ async function importGenerator(path: string, moduleId = path): Promise<Generator
 /**
  * A dummy TypeScript resolver that's used
  */
-function dummyTypeScriptResolver(): void {
-  return;
-}
+function dummyTypeScriptResolver(): void {}  // tslint:disable-line: no-empty

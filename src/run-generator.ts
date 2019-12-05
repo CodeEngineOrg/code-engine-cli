@@ -22,14 +22,11 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
   });
 
   try {
-    if (generator.isTypeScript) {
-      // Enable TypeScript in all CodeEngine worker threads
-      // to support plugins that are written in TypeScript
-      await engine.use({
-        moduleId: join(__dirname, "enable-typescript.js"),
-        data: generator.dir,
-      });
-    }
+    // Enable support for compile-to-javascript languages in the CodeEngine worker threads
+    await engine.import({
+      moduleId: join(__dirname, "transpile-support.js"),
+      data: generator.path,
+    });
 
     await addPlugins(engine, generator, options);
     setupEvents(engine, cli, options);
