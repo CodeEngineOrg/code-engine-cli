@@ -71,7 +71,7 @@ function resolveGenerator(cwd: string, options: ParsedArgs): string {
   let generatorPath = resolveModule(options.generator || ".", cwd);
 
   if (!generatorPath) {
-    throw ono(`Cannot find the CodeEngine generator: ${options.generator || dirname(cwd)}`);
+    throw ono(`Cannot find the CodeEngine generator: ${options.generator || cwd}`);
   }
 
   // Remove the dummy TypeScript resolvers

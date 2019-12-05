@@ -151,7 +151,7 @@ describe("code-engine [generator]", () => {
     // Defaulting to the current directory, which has no generator
     await cli.main();
 
-    process.assert.stderr("Cannot find the CodeEngine generator: .\n");
+    process.assert.stderr(`Cannot find the CodeEngine generator: ${dir}\n`);
     process.assert.exitCode(1);
   });
 
