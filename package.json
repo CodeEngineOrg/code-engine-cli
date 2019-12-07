@@ -55,7 +55,7 @@
   },
   "engineStrict": true,
   "devDependencies": {
-    "@code-engine/types": "0.0.6",
+    "@code-engine/types": "0.0.7",
     "@types/chai": "^4.2.6",
     "@types/command-line-args": "^5.0.0",
     "@types/mocha": "^5.2.7",
@@ -79,8 +79,8 @@
     "version-bump-prompt": "^5.0.6"
   },
   "dependencies": {
-    "@code-engine/lib": "0.0.9",
-    "@code-engine/utils": "0.0.11",
+    "@code-engine/lib": "0.0.11",
+    "@code-engine/utils": "0.0.12",
     "@code-engine/validate": "0.0.1",
     "code-engine-destination-filesystem": "0.0.4",
     "code-engine-source-filesystem": "0.0.3",
