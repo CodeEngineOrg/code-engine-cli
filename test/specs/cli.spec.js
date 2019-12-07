@@ -58,14 +58,17 @@ describe("CodeEngineCLI", () => {
 
   describe("main()", () => {
     it("can be called without any arguments", async () => {
-      let dir = await createDir(["index.js"]);
+      let dir = await createDir([
+        "index.js",
+        "src/file.txt",
+      ]);
       let process = new MockProcess(dir);
       let cli = new CodeEngineCLI({ process });
 
       await cli.main();
 
-      process.assert.exitCode(0);
       process.assert.stderr("");
+      process.assert.exitCode(0);
     });
 
     it("should error and print usage text if an invalid argument is used", async () => {

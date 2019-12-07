@@ -3,12 +3,12 @@
 const CodeEngineCLI = require("../../lib");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
-const { expect } = require("chai");
 
 describe("Logging", () => {
 
   it("should print logs to stdout", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
@@ -29,12 +29,12 @@ describe("Logging", () => {
 
     process.assert.stderr("");
     process.assert.exitCode(0);
-
-    expect(process.stdout.text).to.contain("\nThis is a log\n");
+    process.assert.stdout(/\nThis is a log\n/);
   });
 
   it("should print info logs to stdout", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
@@ -55,12 +55,12 @@ describe("Logging", () => {
 
     process.assert.stderr("");
     process.assert.exitCode(0);
-
-    expect(process.stdout.text).to.contain("\nThis is an info log\n");
+    process.assert.stdout(/\nThis is an info log\n/);
   });
 
   it("should print debug logs to stdout", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
@@ -81,12 +81,12 @@ describe("Logging", () => {
 
     process.assert.stderr("");
     process.assert.exitCode(0);
-
-    expect(process.stdout.text).to.contain("\nThis is a debug log\n");
+    process.assert.stdout(/\nThis is a debug log\n/);
   });
 
   it("should print warning logs to stderr", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
@@ -111,6 +111,7 @@ describe("Logging", () => {
 
   it("should print warning errors to stderr", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
@@ -135,6 +136,7 @@ describe("Logging", () => {
 
   it("should print error logs to stderr", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
@@ -159,6 +161,7 @@ describe("Logging", () => {
 
   it("should print errors to stderr", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
@@ -183,6 +186,7 @@ describe("Logging", () => {
 
   it("should print shorthand errors to stderr", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `

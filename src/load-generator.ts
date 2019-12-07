@@ -1,5 +1,6 @@
 import { importModule, ModuleExports, resolveModule, typedOno } from "@code-engine/utils";
 import { validate } from "@code-engine/validate";
+import { promises as fs } from "fs";
 import { ono } from "ono";
 import { dirname, resolve } from "path";
 import { Generator } from "./generator";
@@ -43,8 +44,8 @@ export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<L
     generator.source = options.sources;
   }
   else if (!generator.source) {
-    // Include all files in the CWD by default
-    generator.source = "**/*";
+    // Include all files in "./src" by default
+    generator.source = await resolveSource(cwd);
   }
 
   if (!generator.destination) {
@@ -53,6 +54,22 @@ export async function loadGenerator(cwd: string, options: ParsedArgs): Promise<L
   }
 
   return { ...generator, path };
+}
+
+/**
+ * Ensures that the "src" directory exists before defaulting to it.
+ */
+async function resolveSource(cwd: string): Promise<string> {
+  try {
+    let src = resolve(cwd, "src");
+    let dir = await fs.opendir(src);
+    await dir.close();
+  }
+  catch (error) {
+    throw ono(error, `No source was specified, and no "./src" directory was found.`);
+  }
+
+  return "./src/**/*";
 }
 
 /**

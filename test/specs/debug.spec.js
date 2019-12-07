@@ -10,7 +10,10 @@ describe("code-engine --debug", () => {
   describe("Debug logging", () => {
 
     it("should not print debug logs by default", async () => {
-      let dir = await createDir(["index.js"]);
+      let dir = await createDir([
+        "index.js",
+        "src/file.txt",
+      ]);
       let process = new MockProcess(dir);
       let cli = new CodeEngineCLI({ process });
       await cli.main();
@@ -22,19 +25,24 @@ describe("code-engine --debug", () => {
     });
 
     it("should print debug logs if --debug is set", async () => {
-      let dir = await createDir(["index.js"]);
+      let dir = await createDir([
+        "index.js",
+        "src/file.txt",
+      ]);
       let process = new MockProcess(dir);
       let cli = new CodeEngineCLI({ process });
       await cli.main(["--debug"]);
 
       process.assert.stderr("");
       process.assert.exitCode(0);
-
-      expect(process.stdout.text).to.contain("CodeEngine worker #");
+      process.assert.stdout(/CodeEngine worker #/);
     });
 
     it("should print debug logs if the DEBUG environment variable is set", async () => {
-      let dir = await createDir(["index.js"]);
+      let dir = await createDir([
+        "index.js",
+        "src/file.txt",
+      ]);
       let process = new MockProcess(dir);
       process.env.DEBUG = "yes";
       let cli = new CodeEngineCLI({ process });
@@ -42,8 +50,7 @@ describe("code-engine --debug", () => {
 
       process.assert.stderr("");
       process.assert.exitCode(0);
-
-      expect(process.stdout.text).to.contain("CodeEngine worker #");
+      process.assert.stdout(/CodeEngine worker #/);
     });
 
   });
@@ -95,6 +102,7 @@ describe("code-engine --debug", () => {
 
     it("should not print stack traces of logged errors by default", async () => {
       let dir = await createDir([
+        "src/file.txt",
         {
           path: "index.js",
           contents: `
@@ -175,6 +183,7 @@ describe("code-engine --debug", () => {
 
     it("should print warning errors with stack traces if --debug is set", async () => {
       let dir = await createDir([
+        "src/file.txt",
         {
           path: "index.js",
           contents: `
@@ -199,6 +208,7 @@ describe("code-engine --debug", () => {
 
     it("should print logged errors with stack traces if --debug is set", async () => {
       let dir = await createDir([
+        "src/file.txt",
         {
           path: "index.js",
           contents: `

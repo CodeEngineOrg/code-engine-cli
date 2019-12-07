@@ -149,7 +149,10 @@ describe("code-engine --dev", () => {
   describe("--dev !== --debug", () => {
 
     it("should not print debug logs if --dev is set", async () => {
-      let dir = await createDir(["index.js"]);
+      let dir = await createDir([
+        "index.js",
+        "src/file.txt",
+      ]);
       let process = new MockProcess(dir);
       let cli = new CodeEngineCLI({ process });
       await cli.main(["--dev"]);
@@ -161,7 +164,10 @@ describe("code-engine --dev", () => {
     });
 
     it('should not print debug logs if NODE_ENV is set to "development"', async () => {
-      let dir = await createDir(["index.js"]);
+      let dir = await createDir([
+        "index.js",
+        "src/file.txt",
+      ]);
       let process = new MockProcess(dir);
       process.env.NODE_ENV = "development";
       let cli = new CodeEngineCLI({ process });

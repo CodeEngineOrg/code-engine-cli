@@ -8,12 +8,12 @@ const { join } = require("path");
 
 describe("code-engine [sources...]", () => {
 
-  it("should default to all files in the current directory", async () => {
+  it("should default to all files in the src directory", async () => {
     let dir = await createDir([
       { path: "index.js", contents: "" },
-      { path: "file.txt", contents: "Hello, world!" },
-      { path: "subdir/index.html", contents: "<h1>Hello, World!</h1>" },
-      { path: "sub/dir/file.txt", contents: "Helloooooooo" },
+      { path: "src/file.txt", contents: "Hello, world!" },
+      { path: "src/subdir/index.html", contents: "<h1>Hello, World!</h1>" },
+      { path: "src/sub/dir/file.txt", contents: "Helloooooooo" },
     ]);
 
     let process = new MockProcess(dir);
@@ -24,7 +24,6 @@ describe("code-engine [sources...]", () => {
     process.assert.exitCode(0);
 
     expect(join(dir, "dist")).to.be.a.directory().with.deep.contents([
-      "index.js",
       "file.txt",
       "sub",
       "sub/dir",
@@ -33,7 +32,6 @@ describe("code-engine [sources...]", () => {
       "subdir/index.html",
     ]);
 
-    expect(join(dir, "dist/index.js")).to.be.a.file().and.empty;
     expect(join(dir, "dist/file.txt")).to.be.a.file().with.contents("Hello, world!");
     expect(join(dir, "dist/subdir/index.html")).to.be.a.file().with.contents("<h1>Hello, World!</h1>");
     expect(join(dir, "dist/sub/dir/file.txt")).to.be.a.file().with.contents("Helloooooooo");
@@ -137,6 +135,43 @@ describe("code-engine [sources...]", () => {
     expect(join(dir, "dist/file1.txt")).to.be.a.file().with.contents("Hello, world!");
     expect(join(dir, "dist/subdir/file2.html")).to.be.a.file().with.contents("<h1>Hello, World!</h1>");
     expect(join(dir, "dist/sub/dir/file4.html")).to.be.a.file().with.contents("<h1>Helloooooooo</h1>");
+  });
+
+  it("should error if no src directory exists", async () => {
+    let dir = await createDir([
+      "index.js",
+    ]);
+
+    let process = new MockProcess(dir);
+    let cli = new CodeEngineCLI({ process });
+    await cli.main();
+
+    process.assert.stderr(
+      'No source was specified, and no "./src" directory was found. \n' +
+      `ENOENT: no such file or directory, opendir '${join(dir, "src")}'\n`
+    );
+    process.assert.exitCode(1);
+
+    expect(join(dir, "dist")).not.to.be.a.path();
+  });
+
+  it("should error if no src is not a directory", async () => {
+    let dir = await createDir([
+      "index.js",
+      { path: "src", contents: "I'm a file, not a directory" },
+    ]);
+
+    let process = new MockProcess(dir);
+    let cli = new CodeEngineCLI({ process });
+    await cli.main();
+
+    process.assert.stderr(
+      'No source was specified, and no "./src" directory was found. \n' +
+      `ENOTDIR: not a directory, opendir '${join(dir, "src")}'\n`
+    );
+    process.assert.exitCode(1);
+
+    expect(join(dir, "dist")).not.to.be.a.path();
   });
 
   it("should error if a source specified in the generator doesn't exist", async () => {

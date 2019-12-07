@@ -9,7 +9,10 @@ const { join } = require("path");
 describe("code-engine [generator]", () => {
 
   it("should default to the current directory", async () => {
-    let dir = await createDir(["index.js"]);
+    let dir = await createDir([
+      "index.js",
+      "src/file.txt",
+    ]);
     let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ process });
 
@@ -20,8 +23,8 @@ describe("code-engine [generator]", () => {
     process.assert.stderr("");
     process.assert.exitCode(0);
 
-    expect(join(dir, "dist")).to.be.a.directory().with.deep.contents(["index.js"]);
-    expect(join(dir, "dist/index.js")).to.be.a.file().and.empty;
+    expect(join(dir, "dist")).to.be.a.directory().with.deep.contents(["file.txt"]);
+    expect(join(dir, "dist/file.txt")).to.be.a.file().and.empty;
   });
 
   it("should use the generator specified by directory path", async () => {

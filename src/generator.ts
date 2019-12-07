@@ -26,7 +26,7 @@ export interface Generator {
    *   - A CodeEngine source plugin
    *   - An array of any combination of these
    *
-   * Defaults to all files in the current directory.
+   * Defaults to all files in the "./src/" directory.
    */
   source?: PluginDefinition | PluginDefinition[];
 

@@ -7,7 +7,10 @@ const createDir = require("../utils/create-dir");
 describe("code-engine --quiet", () => {
 
   it("should not print debug logs if --quiet is set, even though --debug is also set", async () => {
-    let dir = await createDir(["index.js"]);
+    let dir = await createDir([
+      "index.js",
+      "src/file.txt",
+    ]);
     let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ process });
     await cli.main(["--quiet", "--debug"]);
@@ -18,7 +21,10 @@ describe("code-engine --quiet", () => {
   });
 
   it("should not print debug logs if --quiet is set, even though the DEBUG environment variable is also set", async () => {
-    let dir = await createDir(["index.js"]);
+    let dir = await createDir([
+      "index.js",
+      "src/file.txt",
+    ]);
     let process = new MockProcess(dir);
     process.env.DEBUG = "yes";
     let cli = new CodeEngineCLI({ process });
@@ -31,6 +37,7 @@ describe("code-engine --quiet", () => {
 
   it("should not print any logs from plugins if --quiet is set", async () => {
     let dir = await createDir([
+      "src/file.txt",
       {
         path: "index.js",
         contents: `
