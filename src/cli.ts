@@ -49,7 +49,10 @@ export class CodeEngineCLI {
           this.log(manifest.version);
         }
         else {
-          this.log(bannerText);
+          if (!options.quiet) {
+            this.log(bannerText);
+          }
+
           let generator = await loadGenerator(this._process.cwd(), options);
           await runGenerator(generator, this, options);
         }
