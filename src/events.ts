@@ -39,13 +39,8 @@ function log(cli: CodeEngineCLI, options: ParsedArgs) {
         cli.error(message);
         break;
 
-      case LogLevel.Debug:
-        if (options.debug) {
-          cli.log(message);
-        }
-        break;
-
       case LogLevel.Info:
+      case LogLevel.Debug:
       default:
         cli.log(message);
     }

@@ -93,6 +93,30 @@ describe("code-engine --debug", () => {
       process.assert.exitCode(1);
     });
 
+    it("should not print stack traces of logged errors by default", async () => {
+      let dir = await createDir([
+        {
+          path: "index.js",
+          contents: `
+            module.exports = {
+              plugins: [
+                (file, { log }) => {
+                  log.error(new RangeError("This is an error"));
+                }
+              ]
+            };
+          `
+        },
+      ]);
+
+      let process = new MockProcess(dir);
+      let cli = new CodeEngineCLI({ process });
+      await cli.main();
+
+      process.assert.stderr("This is an error\n");
+      process.assert.exitCode(0);
+    });
+
     it("should print stack traces if --debug is set", async () => {
       let dir = await createDir();
       let process = new MockProcess(dir);
@@ -149,6 +173,53 @@ describe("code-engine --debug", () => {
       process.assert.exitCode(1);
     });
 
-  });
+    it("should print warning errors with stack traces if --debug is set", async () => {
+      let dir = await createDir([
+        {
+          path: "index.js",
+          contents: `
+            module.exports = {
+              plugins: [
+                (file, { log }) => {
+                  log.warn(new RangeError("This is a warning error"));
+                }
+              ]
+            };
+          `
+        },
+      ]);
 
+      let process = new MockProcess(dir);
+      let cli = new CodeEngineCLI({ process });
+      await cli.main(["--debug"]);
+
+      process.assert.exitCode(0);
+      expect(process.stderr.text).to.match(/^RangeError: This is a warning error\n    at /);
+    });
+
+    it("should print logged errors with stack traces if --debug is set", async () => {
+      let dir = await createDir([
+        {
+          path: "index.js",
+          contents: `
+            module.exports = {
+              plugins: [
+                (file, { log }) => {
+                  log.error(new RangeError("This is an error"));
+                }
+              ]
+            };
+          `
+        },
+      ]);
+
+      let process = new MockProcess(dir);
+      let cli = new CodeEngineCLI({ process });
+      await cli.main(["--debug"]);
+
+      process.assert.exitCode(0);
+      expect(process.stderr.text).to.match(/^RangeError: This is an error\n    at /);
+    });
+
+  });
 });
