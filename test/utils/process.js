@@ -53,33 +53,42 @@ module.exports = class MockProcess {
        * Asserts that the process exited with the specified code.
        */
       exitCode: (code) => {
-        sinon.assert.calledOnce(this.exit);
-        sinon.assert.calledWith(this.exit, code);
+        let { callCount, firstCall } = this.exit;
+
+        if (callCount === 0) {
+          throw new RangeError("process.exit() was never called");
+        }
+        else if (callCount > 1) {
+          throw new RangeError(`process.exit() was called ${callCount} times`);
+        }
+
+        if (firstCall.args[0] !== code) {
+          throw new Error(`The exit code should have been ${code}, but it was ${firstCall.args[0]}`);
+        }
       },
 
       /**
        * Asserts that the process produced the specified stdout output.
        */
       stdout: (stdout) => {
-        if (stdout instanceof RegExp) {
-          expect(this.stdout.text).to.match(stdout);
-        }
-        else {
-          expect(this.stdout.text).to.equal(stdout);
-        }
+        assertOutput(this.stdout.text, stdout);
       },
 
       /**
        * Asserts that the process produced the specified stderr output.
        */
       stderr: (stderr) => {
-        if (stderr instanceof RegExp) {
-          expect(this.stderr.text).to.match(stderr);
-        }
-        else {
-          expect(this.stderr.text).to.equal(stderr);
-        }
+        assertOutput(this.stderr.text, stderr);
       },
     };
   }
 };
+
+function assertOutput (actual, expected) {
+  if (actual === expected
+  || (expected instanceof RegExp && expected.test(actual))) {
+    return;
+  }
+
+  throw new Error(`Unexpected output\n\nEXPECTED OUTPUT:\n${expected}\n\nACTUAL OUTPUT:\n${actual}`);
+}
