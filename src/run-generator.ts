@@ -22,6 +22,10 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
   });
 
   try {
+    // Add event handlers before doing anything else,
+    // so we can catch any "log" or "error" events that occur
+    setupEvents(engine, cli, options);
+
     // Enable support for compile-to-javascript languages in the CodeEngine worker threads
     await engine.import({
       moduleId: join(__dirname, "transpile-support.js"),
@@ -29,7 +33,6 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
     });
 
     await addPlugins(engine, generator, options);
-    setupEvents(engine, cli, options);
 
     // Run a full build
     await engine.build();
