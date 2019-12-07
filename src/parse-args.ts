@@ -19,7 +19,7 @@ export interface ParsedArgs {
  * Parses the command-line arguments
  * @internal
  */
-export function parseArgs(argv: string[]): ParsedArgs {
+export function parseArgs(argv: string[], env: NodeJS.ProcessEnv): ParsedArgs {
   let args = commandLineArgs(
     [
       { name: "dev", type: Boolean },
@@ -37,9 +37,9 @@ export function parseArgs(argv: string[]): ParsedArgs {
   let [generator, ...sources] = args.positionals as string[];
 
   return {
-    dev: Boolean(args.dev),
+    dev: Boolean(args.dev) || env.NODE_ENV === "development",
     watch: Boolean(args.watch),
-    debug: Boolean(args.debug),
+    debug: Boolean(args.debug || env.DEBUG),
     quiet: Boolean(args.quiet),
     version: Boolean(args.version),
     help: Boolean(args.help),

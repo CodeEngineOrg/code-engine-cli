@@ -13,6 +13,9 @@ export class CodeEngineCLI {
   /** @internal */
   private _process: NodeJS.Process;
 
+  /** @internal */
+  private _debug = false;
+
   public constructor(config: Config = {}) {
     // Use a custom Process object, if provided. Otherwise, use the real one.
     this._process = (config.process as NodeJS.Process) || process;
@@ -35,6 +38,8 @@ export class CodeEngineCLI {
 
     if (options) {
       try {
+        this._debug = options.debug;
+
         if (options.help) {
           // Show the help text and exit
           this.log(helpText);
@@ -78,7 +83,7 @@ export class CodeEngineCLI {
     error = error || "An unknown error occurred";
     let message = String(error.message || error);
 
-    if (this._process.env.DEBUG || this._process.env.NODE_ENV === "development") {
+    if (this._debug) {
       message = String(error.stack) || message;
     }
 
@@ -100,7 +105,7 @@ export class CodeEngineCLI {
    */
   private _parseArgs(args: string[]): ParsedArgs | undefined {
     try {
-      return parseArgs(args);
+      return parseArgs(args, this._process.env);
     }
     catch (error) {
       let message = String((error as Error).message || error);
