@@ -83,7 +83,7 @@
     "@code-engine/utils": "0.0.12",
     "@code-engine/validate": "0.0.1",
     "code-engine-destination-filesystem": "0.0.4",
-    "code-engine-source-filesystem": "0.0.3",
+    "code-engine-source-filesystem": "0.0.4",
     "command-line-args": "^5.1.1",
     "filesize": "^6.0.1",
     "find-up": "^4.1.0",
