@@ -1,7 +1,6 @@
 "use strict";
 
 const sinon = require("sinon");
-const { expect } = require("chai");
 
 /**
  * A mock object that replaces Node's built-in `process` object.
@@ -52,13 +51,13 @@ module.exports = class MockProcess {
       /**
        * Asserts that the process exited with the specified code.
        */
-      exitCode: (code) => {
+      exitCode: (code, expectedCallCount = 1) => {
         let { callCount, firstCall } = this.exit;
 
         if (callCount === 0) {
           throw new RangeError("process.exit() was never called");
         }
-        else if (callCount > 1) {
+        else if (callCount !== expectedCallCount) {
           throw new RangeError(`process.exit() was called ${callCount} times`);
         }
 
@@ -85,8 +84,7 @@ module.exports = class MockProcess {
 };
 
 function assertOutput (actual, expected) {
-  if (actual === expected
-  || (expected instanceof RegExp && expected.test(actual))) {
+  if (actual === expected || (expected instanceof RegExp && expected.test(actual))) {
     return;
   }
 
