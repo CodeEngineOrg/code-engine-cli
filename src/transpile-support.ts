@@ -4,6 +4,9 @@ import { dirname } from "path";
 import * as sourceMapSupport from "source-map-support";
 import { RegisterOptions } from "ts-node";
 
+/**
+ * @internal
+ */
 export { enableTranspiledLanguageSupport };
 
 /**
