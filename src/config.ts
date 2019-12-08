@@ -6,5 +6,5 @@ export interface Config {
   /**
    * Allows overriding some or all of the `process` object's properties and methods.
    */
-  process?: Partial<NodeJS.Process>;
+  process?: NodeJS.Process;
 }

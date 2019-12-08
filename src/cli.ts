@@ -18,7 +18,7 @@ export class CodeEngineCLI {
 
   public constructor(config: Config = {}) {
     // Use a custom Process object, if provided. Otherwise, use the real one.
-    this._process = (config.process as NodeJS.Process) || process;
+    this._process = config.process || process;
 
     // Set the process title
     this._process.title = "CodeEngine";
