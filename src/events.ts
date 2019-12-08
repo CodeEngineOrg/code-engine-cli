@@ -53,7 +53,7 @@ function log(cli: CodeEngineCLI, options: ParsedArgs) {
 function buildStarting(cli: CodeEngineCLI, options: ParsedArgs) {
   return ({ partialBuild, changedFiles }: BuildContext) => {
     if (partialBuild) {
-      let message = `${changedFiles.length} files changed`;
+      let message = `\n${changedFiles.length} files changed`;
 
       if (options.debug) {
         message += "\n  " + changedFiles.map((file) => file.path).join("\n  ");
