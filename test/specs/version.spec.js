@@ -1,6 +1,6 @@
 "use strict";
 
-const CodeEngineCLI = require("../../");
+const { CodeEngineCLI } = require("../../");
 const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 

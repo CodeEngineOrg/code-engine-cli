@@ -1,6 +1,6 @@
 "use strict";
 
-const CodeEngineCLI = require("../../lib");
+const { CodeEngineCLI } = require("../../");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
 const { expect } = require("chai");
