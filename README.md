@@ -1,6 +1,16 @@
 CodeEngine CLI
 ======================================
 
+[![Cross-Platform Compatibility](https://engine.codes/img/badges/os-badges.svg)](https://travis-ci.com/CodeEngineOrg/code-engine-cli)
+[![Build Status](https://api.travis-ci.com/CodeEngineOrg/code-engine-cli.svg?branch=master)](https://travis-ci.com/CodeEngineOrg/code-engine-cli)
+
+[![Coverage Status](https://coveralls.io/repos/github/CodeEngineOrg/code-engine-cli/badge.svg?branch=master)](https://coveralls.io/github/CodeEngineOrg/code-engine-cli)
+[![Dependencies](https://david-dm.org/CodeEngineOrg/code-engine-cli.svg)](https://david-dm.org/CodeEngineOrg/code-engine-cli)
+
+[![npm](https://img.shields.io/npm/v/@code-engine/cli.svg)](https://www.npmjs.com/package/@code-engine/cli)
+[![License](https://img.shields.io/npm/l/@code-engine/cli.svg)](LICENSE)
+
+
 
 This is the command-line interface for [CodeEngine](https://engine.codes/). It exports the `CodeEngineCLI` class, which runs CodeEngine as instructed by the command-line arguments and environment variables.
 
