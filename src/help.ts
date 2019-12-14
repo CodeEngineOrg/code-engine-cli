@@ -24,7 +24,7 @@ export const usageText = `
 Usage: code-engine [options] [generator] [sources...]
 
 options:
-  --dev                 Build for local development insted of production
+  --dev                 Build for local development instead of production
 
   -w, --watch           Watch source files and automatically re-build when changed
 
