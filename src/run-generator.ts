@@ -35,6 +35,7 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
     await addPlugins(engine, generator, options);
 
     // Run a full build
+    await engine.clean();
     await engine.build();
 
     if (options.watch) {
