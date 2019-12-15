@@ -204,8 +204,8 @@ describe("Destination", () => {
     await cli.main();
 
     process.assert.stderr(
-      "An error occurred in Filesystem Destination while processing file.txt. \n" +
-      "EEXIST: file already exists, mkdir\n"
+      "An error occurred in Filesystem Destination while cleaning the destination. \n" +
+      `The destination path is not a directory: ${join(dir, "dist")}\n`
     );
     process.assert.exitCode(1);
   });
