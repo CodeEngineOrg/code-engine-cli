@@ -1,5 +1,5 @@
 import CodeEngine from "@code-engine/lib";
-import { BuildContext, BuildFinishedEventData, EventName, LogEventData, LogLevel } from "@code-engine/types";
+import { BuildContext, BuildSummary, EventName, LogEventData, LogLevel } from "@code-engine/types";
 import * as filesize from "filesize";
 import { CodeEngineCLI } from "./cli";
 import { ParsedArgs } from "./parse-args";
@@ -68,7 +68,7 @@ function buildStarting(cli: CodeEngineCLI, options: ParsedArgs) {
  * Logs a summary of a finished build
  */
 function buildFinished(cli: CodeEngineCLI) {
-  return ({ input, output, time }: BuildFinishedEventData) => {
+  return ({ input, output, time }: BuildSummary) => {
     let message =
     `input:  ${input.fileCount} files (${filesize(input.fileSize)})\n` +
     `output: ${output.fileCount} files (${filesize(output.fileSize)})\n` +

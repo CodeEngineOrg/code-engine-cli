@@ -16,7 +16,6 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
   let engine = new CodeEngine({
     cwd: generator.cwd,
     concurrency: generator.concurrency,
-    watchDelay: generator.watch && generator.watch.delay,
     debug: options.debug,
     dev: options.dev,
   });
@@ -40,7 +39,8 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
 
     if (options.watch) {
       // Watch sources for changes and re-build
-      engine.watch();
+      let watchDelay = generator.watch && generator.watch.delay;
+      engine.watch(watchDelay);
 
       // Wait forever, or until the CLI exits
       await cli.awaitExit();

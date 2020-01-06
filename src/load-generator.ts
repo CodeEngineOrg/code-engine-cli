@@ -1,4 +1,4 @@
-import { importModule, ModuleExports, resolveModule, typedOno } from "@code-engine/utils";
+import { importModule, ModuleExports, resolveModule } from "@code-engine/utils";
 import { validate } from "@code-engine/validate";
 import { promises as fs } from "fs";
 import { ono } from "ono";
@@ -104,7 +104,7 @@ async function importGenerator(path: string, moduleId = path): Promise<Generator
     exports = await importModule(path);
   }
   catch (error) {
-    throw typedOno(error, { moduleId }, `Error in CodeEngine generator: ${moduleId}`);
+    throw ono(error, { moduleId }, `Error in CodeEngine generator: ${moduleId}`);
   }
 
   // The generator can be exported as the default export or a named export
