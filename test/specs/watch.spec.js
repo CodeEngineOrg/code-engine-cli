@@ -2,7 +2,7 @@
 
 const { CodeEngineCLI } = require("../../");
 const MockProcess = require("../utils/process");
-const createDir = require("../utils/create-dir");
+const { delay, createDir } = require("../utils");
 const { expect } = require("chai");
 const { join } = require("path");
 const { promises: fs } = require("fs");
@@ -21,10 +21,6 @@ describe("code-engine --watch", () => {
   afterEach(() => {
     process.exit();
   });
-
-  function delay (time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
 
   it("should re-build when source files change", async () => {
     let dir = await createDir([
@@ -47,7 +43,7 @@ describe("code-engine --watch", () => {
     let cli = new CodeEngineCLI({ process });
     cli.main(["--watch"]);
 
-    // Allow time for all the initial build
+    // Allow time for the initial build
     await delay(BUILD_TIME);
 
     process.assert.stderr("");
@@ -70,7 +66,7 @@ describe("code-engine --watch", () => {
     await fs.writeFile(join(dir, "src/file1.txt"), "File 1 has been modified");
     await fs.writeFile(join(dir, "src/subdir/file2.txt"), "File 2 has been modified");
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr("");
@@ -112,7 +108,7 @@ describe("code-engine --watch", () => {
     let cli = new CodeEngineCLI({ process });
     cli.main(["--watch"]);
 
-    // Allow time for all the initial build
+    // Allow time for the initial build
     await delay(BUILD_TIME);
 
     process.assert.stderr("");
@@ -136,7 +132,7 @@ describe("code-engine --watch", () => {
     await fs.mkdir(join(dir, "src/brand/new/subdir"), { recursive: true });
     await fs.writeFile(join(dir, "src/brand/new/subdir/file5.txt"), "This is file 5");
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr("");
@@ -202,7 +198,7 @@ describe("code-engine --watch", () => {
     let cli = new CodeEngineCLI({ process });
     cli.main(["--watch"]);
 
-    // Allow time for all the initial build
+    // Allow time for the initial build
     await delay(BUILD_TIME);
 
     process.assert.stderr("");
@@ -225,7 +221,7 @@ describe("code-engine --watch", () => {
     await fs.unlink(join(dir, "src/file1.txt"));
     await fs.unlink(join(dir, "src/sub/dir/file3.txt"));
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr("");
@@ -265,7 +261,7 @@ describe("code-engine --watch", () => {
     let cli = new CodeEngineCLI({ process });
     cli.main(["--watch"]);
 
-    // Allow time for all the initial build
+    // Allow time for the initial build
     await delay(BUILD_TIME);
 
     process.assert.stderr("");
@@ -288,7 +284,7 @@ describe("code-engine --watch", () => {
     await fs.writeFile(join(dir, "src/file1.txt"), "File 1 has been modified");
     await fs.writeFile(join(dir, "src/subdir/file2.txt"), "File 2 has been modified");
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr("");
@@ -311,7 +307,7 @@ describe("code-engine --watch", () => {
     // Now delete a file
     await fs.unlink(join(dir, "src/subdir/file2.txt"));
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr("");
@@ -339,7 +335,7 @@ describe("code-engine --watch", () => {
     await fs.mkdir(join(dir, "src/brand/new/subdir"), { recursive: true });
     await fs.writeFile(join(dir, "src/brand/new/subdir/file7.txt"), "This is file 7");
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr("");
@@ -403,7 +399,7 @@ describe("code-engine --watch", () => {
     let cli = new CodeEngineCLI({ process });
     cli.main(["--watch"]);
 
-    // Allow time for all the initial build
+    // Allow time for the initial build
     await delay(BUILD_TIME);
 
     process.assert.stderr("This is an error in the full build\n");
@@ -413,7 +409,7 @@ describe("code-engine --watch", () => {
     // Now modify the file to trigger a partial build
     await fs.writeFile(join(dir, "src/file1.txt"), "File 1 has been modified");
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr(/\nThis is an error in the partial build\n/);
@@ -449,7 +445,7 @@ describe("code-engine --watch", () => {
     let cli = new CodeEngineCLI({ process });
     cli.main(["--watch"]);
 
-    // Allow time for all the initial build
+    // Allow time for the initial build
     await delay(BUILD_TIME);
 
     process.assert.stderr("");
@@ -458,7 +454,7 @@ describe("code-engine --watch", () => {
     // Now modify the file to trigger a partial build
     await fs.writeFile(join(dir, "src/file1.txt"), "File 1 has been modified");
 
-    // Allow time for all the initial build
+    // Allow time for the re-build
     await delay(WATCH_DELAY + BUILD_TIME);
 
     process.assert.stderr("An error occurred in Plugin 2 while processing file1.txt. \nBoom!\n");
