@@ -2,19 +2,26 @@ import CodeEngine from "@code-engine/lib";
 import { BuildContext, BuildSummary, EventName, LogEventData, LogLevel } from "@code-engine/types";
 import * as filesize from "filesize";
 import { CodeEngineCLI } from "./cli";
+import { LoadedGenerator } from "./load-generator";
 import { ParsedArgs } from "./parse-args";
 
 /**
  * Sets-up event handlers for CodeEngine events and maps them to CLI behavior.
  * @internal
  */
-export function setupEvents(engine: CodeEngine, cli: CodeEngineCLI, options: ParsedArgs) {
+export function setupEvents(engine: CodeEngine, generator: LoadedGenerator, cli: CodeEngineCLI, options: ParsedArgs) {
   engine.on(EventName.Error, error(cli, engine));
 
+  generator.onBuildStarting && engine.on(EventName.BuildStarting, generator.onBuildStarting);
+  generator.onBuildFinished && engine.on(EventName.BuildFinished, generator.onBuildFinished);
+  generator.onFileChanged && engine.on(EventName.FileChanged, generator.onFileChanged);
+  generator.onError && engine.on(EventName.Error, generator.onError);
+  generator.onLog && engine.on(EventName.Log, generator.onLog);
+
   if (!options.quiet) {
-    engine.on(EventName.Log, log(cli, options));
-    engine.on(EventName.BuildStarting, buildStarting(cli, options));
-    engine.on(EventName.BuildFinished, buildFinished(cli));
+    engine.on(EventName.Log, printToConsole(cli, options));
+    engine.on(EventName.BuildStarting, printChangedFiles(cli, options));
+    engine.on(EventName.BuildFinished, printBuildSummary(cli));
   }
 }
 
@@ -29,9 +36,9 @@ function error(cli: CodeEngineCLI, engine: CodeEngine) {
 }
 
 /**
- * Logs messages to the console
+ * Prints log messages to the console
  */
-function log(cli: CodeEngineCLI, options: ParsedArgs) {
+function printToConsole(cli: CodeEngineCLI, options: ParsedArgs) {
   return ({ level, message }: LogEventData) => {
     switch (level) {
       case LogLevel.Error:
@@ -48,9 +55,9 @@ function log(cli: CodeEngineCLI, options: ParsedArgs) {
 }
 
 /**
- * Logs information at the start of a new build
+ * Prints the file changes that triggered a re-build
  */
-function buildStarting(cli: CodeEngineCLI, options: ParsedArgs) {
+function printChangedFiles(cli: CodeEngineCLI, options: ParsedArgs) {
   return ({ partialBuild, changedFiles }: BuildContext) => {
     if (partialBuild) {
       let message = `\n${changedFiles.length} files changed`;
@@ -65,9 +72,9 @@ function buildStarting(cli: CodeEngineCLI, options: ParsedArgs) {
 }
 
 /**
- * Logs a summary of a finished build
+ * Prints a summary of a finished build
  */
-function buildFinished(cli: CodeEngineCLI) {
+function printBuildSummary(cli: CodeEngineCLI) {
   return ({ input, output, time }: BuildSummary) => {
     let message =
     `input:  ${input.fileCount} files (${filesize(input.fileSize)})\n` +

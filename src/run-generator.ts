@@ -23,7 +23,7 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
   try {
     // Add event handlers before doing anything else,
     // so we can catch any "log" or "error" events that occur
-    setupEvents(engine, cli, options);
+    setupEvents(engine, generator, cli, options);
 
     // Enable support for compile-to-javascript languages in the CodeEngine worker threads
     await engine.import({
