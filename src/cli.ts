@@ -1,8 +1,8 @@
-import { Config } from "./config";
+import validate from "@code-engine/validate";
+import { Config, Manifest } from "./config";
 import { ExitCode } from "./exit-code";
-import { bannerText, helpText, usageText } from "./help";
+import { getBanner, usageText } from "./help";
 import { loadGenerator } from "./load-generator";
-import { manifest } from "./manifest";
 import { parseArgs, ParsedArgs } from "./parse-args";
 import { runGenerator } from "./run-generator";
 
@@ -14,9 +14,20 @@ export class CodeEngineCLI {
   private _process: NodeJS.Process;
 
   /** @internal */
+  private _manifest: Manifest;
+
+  /** @internal */
   private _debug = false;
 
-  public constructor(config: Config = {}) {
+  public constructor(config: Config) {
+    validate.type.object(config, "CLI config");
+
+    // Validate the CLI manifest
+    this._manifest = validate.type.object(config.manifest, "CLI manifest");
+    validate.string.nonWhitespace(config.manifest.name, "CLI name");
+    validate.string.nonWhitespace(config.manifest.version, "CLI version");
+    validate.string.nonWhitespace(config.manifest.description, "CLI description");
+
     // Use a custom Process object, if provided. Otherwise, use the real one.
     this._process = config.process || process;
 
@@ -42,14 +53,17 @@ export class CodeEngineCLI {
 
         if (options.help) {
           // Show the help text and exit
-          this.log(helpText);
+          let bannerText = getBanner(this._manifest);
+          this.log(`\n${bannerText}${usageText}`);
         }
         else if (options.version) {
           // Show the version number and exit
-          this.log(manifest.version);
+          this.log(this._manifest.version);
         }
         else {
           if (!options.quiet) {
+            // Show the CodeEngine ASCII art banner
+            let bannerText = getBanner(this._manifest);
             this.log(bannerText);
           }
 

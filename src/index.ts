@@ -1,6 +1,6 @@
 import { CodeEngineCLI } from "./cli";
 
-export { Config } from "./config";
+export * from "./config";
 export * from "./generator";
 export { CodeEngineCLI };
 

@@ -1,20 +1,20 @@
-import { manifest } from "./manifest";
+import { Manifest } from "./config";
 
 /**
- * Banner text displayed at startup
+ * Retruns the CodeEngine ASCII art banner
  * @internal
  */
-export const bannerText =
-  " ______            __          ______                                 \n" +
-  "|   ___|          |  |        |   ___|               __               \n" +
-  "|  |     _____  __|  | _____  |  |_    __ __  _____ |__| __ __  _____ \n" +
-  "|  |    |  _  ||  _  ||  __ | |   _|  |  \\  ||  _  ||  ||  \\  ||  __ |\n" +
-  "|  |___ | |_| || |_| ||  __|  |  |___ |     || |_| ||  ||     ||  __| \n" +
-  "|______||_____||_____||_____| |______||__\\__||___  ||__||__\\__||_____|\n" +
-  "                                             |_____|                  \n" +
-  center(manifest.description, 70) + "\n" +
-  center(`v${manifest.version}`, 70) + "\n"
-;
+export function getBanner(manifest: Manifest) {
+  return " ______            __          ______                                 \n" +
+         "|   ___|          |  |        |   ___|               __               \n" +
+         "|  |     _____  __|  | _____  |  |_    __ __  _____ |__| __ __  _____ \n" +
+         "|  |    |  _  ||  _  ||  __ | |   _|  |  \\  ||  _  ||  ||  \\  ||  __ |\n" +
+         "|  |___ | |_| || |_| ||  __|  |  |___ |     || |_| ||  ||     ||  __| \n" +
+         "|______||_____||_____||_____| |______||__\\__||___  ||__||__\\__||_____|\n" +
+         "                                             |_____|                  \n" +
+         center(manifest.description, 70) + "\n" +
+         center(`v${manifest.version}`, 70) + "\n";
+}
 
 /**
  * Text explaining how to use the CLI
@@ -44,12 +44,6 @@ sources...
   One or more files, directories, and/or globs to process (eg: README.md *.txt docs/**/*).
   Defaults to all files in the current directory and subdirectories (i.e. **/*)
 `;
-
-/**
- * Text describing the program and how to use it
- * @internal
- */
-export const helpText = `\n${bannerText}${usageText}`;
 
 /**
  * Centers a string
