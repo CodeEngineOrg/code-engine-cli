@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
 const { expect } = require("chai");
@@ -33,7 +34,7 @@ describe("code-engine --dev", () => {
       { path: "file.txt" },
     ]);
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -67,7 +68,7 @@ describe("code-engine --dev", () => {
       { path: "file.txt" },
     ]);
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--dev"]);
 
     process.assert.stderr("");
@@ -102,7 +103,7 @@ describe("code-engine --dev", () => {
     ]);
     let process = new MockProcess(dir);
     process.env.NODE_ENV = "development";
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -137,7 +138,7 @@ describe("code-engine --dev", () => {
     ]);
     let process = new MockProcess(dir);
     process.env.NODE_ENV = "production";
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -154,7 +155,7 @@ describe("code-engine --dev", () => {
         "src/file.txt",
       ]);
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main(["--dev"]);
 
       process.assert.stderr("");
@@ -170,7 +171,7 @@ describe("code-engine --dev", () => {
       ]);
       let process = new MockProcess(dir);
       process.env.NODE_ENV = "development";
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main();
 
       process.assert.stderr("");
@@ -182,7 +183,7 @@ describe("code-engine --dev", () => {
     it("should not print stack traces if --dev is set", async () => {
       let dir = await createDir();
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["--dev", "my-generator"]);
@@ -195,7 +196,7 @@ describe("code-engine --dev", () => {
       let dir = await createDir();
       let process = new MockProcess(dir);
       process.env.NODE_ENV = "development";
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["my-generator"]);

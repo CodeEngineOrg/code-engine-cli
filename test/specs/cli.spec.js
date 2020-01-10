@@ -1,9 +1,10 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
-const { expect } = require("chai");
+const { assert, expect } = require("chai");
 const sinon = require("sinon");
 
 const nodeProcess = process;
@@ -19,25 +20,9 @@ describe("CodeEngineCLI", () => {
       global.process = nodeProcess;
     });
 
-    it("should work without any arguments", () => {
-      let cli = new CodeEngineCLI();
-      expect(cli).to.be.an.instanceOf(CodeEngineCLI);
-
-      // Make sure it used the correct Process object
-      sinon.assert.calledOnce(global.process.setTitle);
-    });
-
-    it("should work without an empty argument", () => {
-      let cli = new CodeEngineCLI({});
-      expect(cli).to.be.an.instanceOf(CodeEngineCLI);
-
-      // Make sure it used the correct Process object
-      sinon.assert.calledOnce(global.process.setTitle);
-    });
-
     it("should set the title of the global Process object", () => {
       // eslint-disable-next-line no-unused-vars
-      let cli = new CodeEngineCLI();
+      let cli = new CodeEngineCLI({ manifest });
 
       sinon.assert.calledOnce(global.process.setTitle);
       sinon.assert.calledWith(global.process.setTitle, "CodeEngine");
@@ -47,12 +32,72 @@ describe("CodeEngineCLI", () => {
       let process = new MockProcess();
 
       // eslint-disable-next-line no-unused-vars
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       sinon.assert.calledOnce(process.setTitle);
       sinon.assert.calledWith(process.setTitle, "CodeEngine");
 
       sinon.assert.notCalled(global.process.setTitle);
+    });
+
+    it("should not work without any arguments", () => {
+      try {
+        // eslint-disable-next-line no-new
+        new CodeEngineCLI();
+        assert.fail("An error should have been thrown");
+      }
+      catch (error) {
+        expect(error).to.be.an.instanceOf(TypeError);
+        expect(error.message).to.equal("Invalid CLI config: undefined. A value is required.");
+      }
+    });
+
+    it("should not work without an empty argument", () => {
+      try {
+        // eslint-disable-next-line no-new
+        new CodeEngineCLI({});
+        assert.fail("An error should have been thrown");
+      }
+      catch (error) {
+        expect(error).to.be.an.instanceOf(TypeError);
+        expect(error.message).to.equal("Invalid CLI manifest: undefined. A value is required.");
+      }
+    });
+
+    it("should not work without a manifest name", () => {
+      try {
+        // eslint-disable-next-line no-new
+        new CodeEngineCLI({ manifest: { name: "   " }});
+        assert.fail("An error should have been thrown");
+      }
+      catch (error) {
+        expect(error).to.be.an.instanceOf(Error);
+        expect(error.message).to.equal('Invalid CLI name: "   ". It cannot be all whitespace.');
+      }
+    });
+
+    it("should not work without a manifest version", () => {
+      try {
+        // eslint-disable-next-line no-new
+        new CodeEngineCLI({ manifest: { name: "my-cli", version: "   " }});
+        assert.fail("An error should have been thrown");
+      }
+      catch (error) {
+        expect(error).to.be.an.instanceOf(Error);
+        expect(error.message).to.equal('Invalid CLI version: "   ". It cannot be all whitespace.');
+      }
+    });
+
+    it("should not work without a manifest version", () => {
+      try {
+        // eslint-disable-next-line no-new
+        new CodeEngineCLI({ manifest: { name: "my-cli", version: "1.2.3", description: "   " }});
+        assert.fail("An error should have been thrown");
+      }
+      catch (error) {
+        expect(error).to.be.an.instanceOf(Error);
+        expect(error.message).to.equal('Invalid CLI description: "   ". It cannot be all whitespace.');
+      }
     });
   });
 
@@ -63,7 +108,7 @@ describe("CodeEngineCLI", () => {
         "src/file.txt",
       ]);
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       await cli.main();
 
@@ -73,7 +118,7 @@ describe("CodeEngineCLI", () => {
 
     it("should error and print usage text if an invalid argument is used", async () => {
       let process = new MockProcess();
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       await cli.main(["--fizzbuzz"]);
 
@@ -84,7 +129,7 @@ describe("CodeEngineCLI", () => {
 
     it("should error and print usage text if an invalid shorthand argument is used", async () => {
       let process = new MockProcess();
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       await cli.main(["-qhzt"]);
 

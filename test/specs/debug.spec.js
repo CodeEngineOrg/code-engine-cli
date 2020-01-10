@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
 const { expect } = require("chai");
@@ -15,7 +16,7 @@ describe("code-engine --debug", () => {
         "src/file.txt",
       ]);
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main();
 
       process.assert.stderr("");
@@ -30,7 +31,7 @@ describe("code-engine --debug", () => {
         "src/file.txt",
       ]);
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main(["--debug"]);
 
       process.assert.stderr("");
@@ -45,7 +46,7 @@ describe("code-engine --debug", () => {
       ]);
       let process = new MockProcess(dir);
       process.env.DEBUG = "yes";
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main();
 
       process.assert.stderr("");
@@ -60,7 +61,7 @@ describe("code-engine --debug", () => {
     it("should not print stack traces by default", async () => {
       let dir = await createDir();
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["my-generator"]);
@@ -93,7 +94,7 @@ describe("code-engine --debug", () => {
         { path: "file.txt", contents: "Hello, world!" },
       ]);
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main();
 
       process.assert.stderr("An error occurred in myPlugin while processing file.txt. \nBoom!\n");
@@ -118,7 +119,7 @@ describe("code-engine --debug", () => {
       ]);
 
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main();
 
       process.assert.stderr("This is an error\n");
@@ -128,7 +129,7 @@ describe("code-engine --debug", () => {
     it("should print stack traces if --debug is set", async () => {
       let dir = await createDir();
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["--debug", "my-generator"]);
@@ -141,7 +142,7 @@ describe("code-engine --debug", () => {
       let dir = await createDir();
       let process = new MockProcess(dir);
       process.env.DEBUG = "true";
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
 
       // Explicitly specifying a generator that doesn't exist
       await cli.main(["my-generator"]);
@@ -174,7 +175,7 @@ describe("code-engine --debug", () => {
         { path: "file.txt", contents: "Hello, world!" },
       ]);
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main(["--debug"]);
 
       process.assert.stderr(/RangeError: An error occurred in myPlugin while processing file\.txt\. \nBoom!\n    at /);
@@ -199,7 +200,7 @@ describe("code-engine --debug", () => {
       ]);
 
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main(["--debug"]);
 
       process.assert.exitCode(0);
@@ -224,7 +225,7 @@ describe("code-engine --debug", () => {
       ]);
 
       let process = new MockProcess(dir);
-      let cli = new CodeEngineCLI({ process });
+      let cli = new CodeEngineCLI({ manifest, process });
       await cli.main(["--debug"]);
 
       process.assert.exitCode(0);

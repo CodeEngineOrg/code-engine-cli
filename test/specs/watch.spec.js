@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const { delay, createDir } = require("../utils");
 const { expect } = require("chai");
@@ -40,7 +41,7 @@ describe("code-engine --watch", () => {
     ]);
 
     process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
     // Allow time for the initial build
@@ -105,7 +106,7 @@ describe("code-engine --watch", () => {
     ]);
 
     process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
     // Allow time for the initial build
@@ -195,7 +196,7 @@ describe("code-engine --watch", () => {
     ]);
 
     process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
     // Allow time for the initial build
@@ -258,7 +259,7 @@ describe("code-engine --watch", () => {
     ]);
 
     process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
     // Allow time for the initial build
@@ -396,7 +397,7 @@ describe("code-engine --watch", () => {
     ]);
 
     process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
     // Allow time for the initial build
@@ -442,7 +443,7 @@ describe("code-engine --watch", () => {
     ]);
 
     process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
     // Allow time for the initial build

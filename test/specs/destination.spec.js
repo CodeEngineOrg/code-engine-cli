@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../lib");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
 const { expect } = require("chai");
@@ -17,7 +18,7 @@ describe("Destination", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -54,7 +55,7 @@ describe("Destination", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -91,7 +92,7 @@ describe("Destination", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -130,7 +131,7 @@ describe("Destination", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -172,7 +173,7 @@ describe("Destination", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -200,7 +201,7 @@ describe("Destination", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr(

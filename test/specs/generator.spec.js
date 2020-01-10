@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
 const { expect } = require("chai");
@@ -14,7 +15,7 @@ describe("code-engine [generator]", () => {
       "src/file.txt",
     ]);
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Running CodeEngine without any arguments should default to using the current directory
     // as the generator, the source, and the destination
@@ -57,7 +58,7 @@ describe("code-engine [generator]", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Explicitly specifying a generator directory path
     await cli.main(["./my-generator"]);
@@ -92,7 +93,7 @@ describe("code-engine [generator]", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Explicitly specifying a generator file path
     await cli.main(["./my-generator/lib/generator.js"]);
@@ -134,7 +135,7 @@ describe("code-engine [generator]", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Explicitly specifying a generator package name
     await cli.main(["my-generator"]);
@@ -149,7 +150,7 @@ describe("code-engine [generator]", () => {
   it("should error if the default directory is not a generator", async () => {
     let dir = await createDir();
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Defaulting to the current directory, which has no generator
     await cli.main();
@@ -161,7 +162,7 @@ describe("code-engine [generator]", () => {
   it("should error if the specified generator doesn't exist", async () => {
     let dir = await createDir();
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Explicitly specifying a generator that doesn't exist
     await cli.main(["my-generator"]);
@@ -179,7 +180,7 @@ describe("code-engine [generator]", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["my-generator"]);
 
     process.assert.stderr("Error in CodeEngine generator: my-generator \nUnexpected identifier\n");
@@ -195,7 +196,7 @@ describe("code-engine [generator]", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["my-generator"]);
 
     process.assert.stderr("Invalid CodeEngine generator: 3.141592653589793. Expected an object.\n");

@@ -9,7 +9,7 @@ describe("code-engine --help", () => {
 
   it("should show usage text", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--help"]);
 
     process.assert.stderr("");
@@ -20,7 +20,7 @@ describe("code-engine --help", () => {
 
   it("should support -h shorthand", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["-h"]);
 
     process.assert.stderr("");
@@ -31,7 +31,7 @@ describe("code-engine --help", () => {
 
   it("should ignore other arguments", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--quiet", "--version", "--help"]);
 
     process.assert.stderr("");
@@ -42,7 +42,7 @@ describe("code-engine --help", () => {
 
   it("should ignore other shorthand arguments", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["-qvh"]);
 
     process.assert.stderr("");

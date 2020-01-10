@@ -8,7 +8,7 @@ describe("code-engine --version", () => {
 
   it("should print the version number", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--version"]);
 
     process.assert.stderr("");
@@ -18,7 +18,7 @@ describe("code-engine --version", () => {
 
   it("should support -v shorthand", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["-v"]);
 
     process.assert.stderr("");
@@ -28,7 +28,7 @@ describe("code-engine --version", () => {
 
   it("should ignore other arguments", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--quiet", "--version"]);
 
     process.assert.stderr("");
@@ -38,7 +38,7 @@ describe("code-engine --version", () => {
 
   it("should ignore other shorthand arguments", async () => {
     let process = new MockProcess();
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["-qv"]);
 
     process.assert.stderr("");

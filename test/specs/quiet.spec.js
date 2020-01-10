@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
 
@@ -12,7 +13,7 @@ describe("code-engine --quiet", () => {
       "src/file.txt",
     ]);
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--quiet", "--debug"]);
 
     process.assert.stderr("");
@@ -27,7 +28,7 @@ describe("code-engine --quiet", () => {
     ]);
     let process = new MockProcess(dir);
     process.env.DEBUG = "yes";
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--quiet"]);
 
     process.assert.stderr("");
@@ -58,7 +59,7 @@ describe("code-engine --quiet", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--quiet"]);
 
     process.assert.stderr("");
@@ -69,7 +70,7 @@ describe("code-engine --quiet", () => {
   it("should print errors, even if --quiet is set", async () => {
     let dir = await createDir();
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Explicitly specifying a generator that doesn't exist
     await cli.main(["--quiet", "my-generator"]);
@@ -102,7 +103,7 @@ describe("code-engine --quiet", () => {
       { path: "file.txt", contents: "Hello, world!" },
     ]);
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main(["--quiet"]);
 
     process.assert.stderr("An error occurred in myPlugin while processing file.txt. \nBoom!\n");
@@ -112,7 +113,7 @@ describe("code-engine --quiet", () => {
   it("should print stack traces, even if --quiet is set", async () => {
     let dir = await createDir();
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     // Explicitly specifying a generator that doesn't exist
     await cli.main(["--quiet", "--debug", "my-generator"]);

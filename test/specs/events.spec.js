@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../lib");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const { delay, createDir } = require("../utils");
 const sinon = require("sinon");
@@ -31,7 +32,7 @@ describe("Events", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -63,7 +64,7 @@ describe("Events", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -99,7 +100,7 @@ describe("Events", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
 
     try {
       cli.main(["--watch"]);
@@ -159,7 +160,7 @@ describe("Events", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("An error occurred in badPlugin while processing file.txt. \nBoom!\n");
@@ -198,7 +199,7 @@ describe("Events", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");

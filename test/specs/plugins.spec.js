@@ -1,6 +1,7 @@
 "use strict";
 
 const { CodeEngineCLI } = require("../../lib");
+const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const createDir = require("../utils/create-dir");
 const { expect } = require("chai");
@@ -36,7 +37,7 @@ describe("Plugins", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -88,7 +89,7 @@ describe("Plugins", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -127,7 +128,7 @@ describe("Plugins", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -166,7 +167,7 @@ describe("Plugins", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr("");
@@ -205,7 +206,7 @@ describe("Plugins", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr(/Error in CodeEngine generator: /);
@@ -239,7 +240,7 @@ describe("Plugins", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr(/Error in Plugin 2. /);
@@ -266,7 +267,7 @@ describe("Plugins", () => {
     ]);
 
     let process = new MockProcess(dir);
-    let cli = new CodeEngineCLI({ process });
+    let cli = new CodeEngineCLI({ manifest, process });
     await cli.main();
 
     process.assert.stderr(
