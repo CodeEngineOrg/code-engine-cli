@@ -1,4 +1,5 @@
 import validate from "@code-engine/validate";
+import * as updateNotifier from "update-notifier";
 import { Config, Manifest } from "./config";
 import { ExitCode } from "./exit-code";
 import { getBanner, usageText } from "./help";
@@ -62,6 +63,9 @@ export class CodeEngineCLI {
         }
         else {
           if (!options.quiet) {
+            // Check for a new version of the CLI, and prompt the user to update
+            updateNotifier({ pkg: this._manifest, shouldNotifyInNpmScript: true }).notify();
+
             // Show the CodeEngine ASCII art banner
             let bannerText = getBanner(this._manifest);
             this.log(bannerText);
