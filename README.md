@@ -24,9 +24,10 @@ This is the programmatic interface to the CodeEngine CLI.
 
 ```javascript
 import CodeEngineCLI from "@code-engine/cli";
+import manifest from "./package.json";
 
 // Create a new CodeEngineCLI instance
-let cli = new CodeEngineCLI();
+let cli = new CodeEngineCLI({ manifest });
 
 // Run it with some command-line arguments
 await cli.main(["--debug", "my-generator"]);
@@ -34,13 +35,18 @@ await cli.main(["--debug", "my-generator"]);
 
 
 ### `CodeEngineCLI` constructor
-The constructor accepts an optional [`Config` object](src/config.ts).
+The constructor accepts a [`Config` object](src/config.ts).
 
 ```javascript
 import CodeEngineCLI from "@code-engine/cli";
 
 // Create a new CodeEngineCLI instance with a custom config
 let cli = new CodeEngine({
+  manifest: {
+    name: "my-custom-cli",
+    version: "1.23.456",
+    description: "My custom CLI description",
+  },
   process: {
     ...process,
     stdout: new WriteStream(),
@@ -49,9 +55,10 @@ let cli = new CodeEngine({
 });
 ```
 
-|Config setting  |Type    |Default          |Description
-|----------------|--------|-----------------|---------------------------------------------------
-|`process`       |[`Process` object](https://nodejs.org/api/process.html#process_process) |`process` <br>(Node.js global) |A custom `Process` object to use instead of the Node.js global `process` object. This allows you to completely control all inputs and outputs.
+|Config setting  |Required |Type    |Default          |Description
+|----------------|---------|--------|-----------------|---------------------------------------------------
+|`manifest`      |yes      |object  |none             |Information about your CLI, such as its name, version number, and description. You can just set this to the contents of your `package.json` file.
+|`process`       |no       |[`Process` object](https://nodejs.org/api/process.html#process_process) |`process` <br>(Node.js global) |A custom `Process` object to use instead of the Node.js global `process` object. This allows you to completely control all inputs and outputs.
 
 
 ### `CodeEngineCLI.log(message)`
@@ -61,8 +68,9 @@ Writes a message to the stdout stream.
 
 ```javascript
 import CodeEngineCLI from "@code-engine/cli";
+import manifest from "./package.json";
 
-let cli = new CodeEngineCLI();
+let cli = new CodeEngineCLI({ manifest });
 
 cli.log("Hello, world");
 ```
@@ -75,8 +83,9 @@ Writes a message to the stderr stream.
 
 ```javascript
 import CodeEngineCLI from "@code-engine/cli";
+import manifest from "./package.json";
 
-let cli = new CodeEngineCLI();
+let cli = new CodeEngineCLI({ manifest });
 
 cli.error("Something went wrong");
 ```
@@ -91,8 +100,9 @@ Immediately terminates the CLI with the given error.
 
 ```javascript
 import CodeEngineCLI from "@code-engine/cli";
+import manifest from "./package.json";
 
-let cli = new CodeEngineCLI();
+let cli = new CodeEngineCLI({ manifest });
 
 cli.crash(new SyntaxError("Something went wrong"));
 ```
@@ -105,8 +115,9 @@ Waits for the CLI to exit. This function returns a `Promise` that only resolves 
 
 ```javascript
 import CodeEngineCLI from "@code-engine/cli";
+import manifest from "./package.json";
 
-let cli = new CodeEngineCLI();
+let cli = new CodeEngineCLI({ manifest });
 
 await cli.awaitExit();
 ```
