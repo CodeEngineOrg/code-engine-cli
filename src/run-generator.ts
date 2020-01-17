@@ -26,19 +26,16 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
     setupEvents(engine, generator, cli, options);
 
     // Enable support for compile-to-javascript languages in the CodeEngine worker threads
-    await engine.import({
-      moduleId: join(__dirname, "transpile-support.js"),
-      data: generator.path,
-    });
+    await engine.import(join(__dirname, "transpile-support.js"), generator.path);
 
     await addPlugins(engine, generator, options);
 
-    // Run a full build
+    // Do a full run
     await engine.clean();
-    await engine.build();
+    await engine.run();
 
     if (options.watch) {
-      // Watch sources for changes and re-build
+      // Watch sources for changes and re-runs CodeEngine
       let watchDelay = generator.watch && generator.watch.delay;
       engine.watch(watchDelay);
 

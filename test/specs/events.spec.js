@@ -10,12 +10,12 @@ const { join } = require("path");
 const { promises: fs } = require("fs");
 
 // CI environments are slow, so use a larger time buffer
-const BUILD_TIME = process.env.CI ? 800 : 500;
+const RUN_TIME = process.env.CI ? 800 : 500;
 const WATCH_DELAY = process.env.CI ? 300 : 100;
 
 describe("Events", () => {
 
-  it("should call the onBuildStarting handler when a build starts", async () => {
+  it('should emit the "start" event when a run starts', async () => {
     let spy = global.spy = sinon.spy();
 
     let dir = await createDir([
@@ -24,7 +24,11 @@ describe("Events", () => {
         contents: `
           module.exports = {
             source: "**/*.txt",
-            onBuildStarting: global.spy
+            plugins: [{
+              initialize () {
+                this.engine.on("start", global.spy);
+              }
+            }]
           }
         `
       },
@@ -41,13 +45,13 @@ describe("Events", () => {
     sinon.assert.calledOnce(spy);
     expect(spy.firstCall.thisValue[Symbol.toStringTag]).to.equal("CodeEngine");
 
-    let [context] = spy.firstCall.args;
-    sinon.assert.calledWithExactly(spy, context);
-    expect(context).to.be.an("object").with.keys(
-      "cwd", "concurrency", "debug", "dev", "fullBuild", "partialBuild", "changedFiles", "log");
+    let [run] = spy.firstCall.args;
+    sinon.assert.calledWithExactly(spy, run);
+    expect(run).to.be.an("object").with.keys(
+      "cwd", "concurrency", "debug", "dev", "full", "partial", "changedFiles", "log");
   });
 
-  it("should call the onBuildFinished handler when a build starts", async () => {
+  it('should emit the "finish" event when a run finishes', async () => {
     let spy = global.spy = sinon.spy();
 
     let dir = await createDir([
@@ -56,7 +60,11 @@ describe("Events", () => {
         contents: `
           module.exports = {
             source: "**/*.txt",
-            onBuildFinished: global.spy
+            plugins: [{
+              initialize () {
+                this.engine.on("finish", global.spy);
+              }
+            }],
           }
         `
       },
@@ -76,11 +84,11 @@ describe("Events", () => {
     let [summary] = spy.firstCall.args;
     sinon.assert.calledWithExactly(spy, summary);
     expect(summary).to.be.an("object").with.keys(
-      "concurrency", "cwd", "debug", "dev", "fullBuild", "partialBuild", "changedFiles", "log",
+      "concurrency", "cwd", "debug", "dev", "full", "partial", "changedFiles", "log",
       "input", "output", "time");
   });
 
-  it("should call the onFileChanged handler when an incremental re-build starts", async () => {
+  it('should emit the "change" event when file changes are detected', async () => {
     let spy = global.spy = sinon.spy();
 
     let dir = await createDir([
@@ -88,7 +96,11 @@ describe("Events", () => {
         path: "index.js",
         contents: `
           module.exports = {
-            onFileChanged: global.spy,
+            plugins: [{
+              initialize () {
+                this.engine.on("change", global.spy);
+              }
+            }],
             watch: {
               delay: ${WATCH_DELAY}
             }
@@ -105,15 +117,15 @@ describe("Events", () => {
     try {
       cli.main(["--watch"]);
 
-      // Allow time for the initial build
-      await delay(BUILD_TIME);
+      // Allow time for the initial run
+      await delay(RUN_TIME);
 
       // Now modify both files
       await fs.writeFile(join(dir, "src/file1.txt"), "File 1 has been modified");
       await fs.writeFile(join(dir, "src/file2.txt"), "File 2 has been modified");
 
-      // Allow time for all the re-build
-      await delay(WATCH_DELAY + BUILD_TIME);
+      // Allow time for the watch delay + run
+      await delay(WATCH_DELAY + RUN_TIME);
 
       process.assert.stderr("");
 
@@ -121,24 +133,22 @@ describe("Events", () => {
       expect(spy.firstCall.thisValue[Symbol.toStringTag]).to.equal("CodeEngine");
       expect(spy.secondCall.thisValue[Symbol.toStringTag]).to.equal("CodeEngine");
 
-      let [file, context] = spy.firstCall.args;
-      sinon.assert.calledWithExactly(spy, file, context);
+      let [file] = spy.firstCall.args;
+      sinon.assert.calledWithExactly(spy, file);
       expect(file).to.have.property("name", "file1.txt");
       expect(file).to.have.property("text", "File 1 has been modified");
-      expect(context).to.be.an("object").with.keys("concurrency", "cwd", "debug", "dev", "log");
 
-      [file, context] = spy.secondCall.args;
-      sinon.assert.calledWithExactly(spy, file, context);
+      [file] = spy.secondCall.args;
+      sinon.assert.calledWithExactly(spy, file);
       expect(file).to.have.property("name", "file2.txt");
       expect(file).to.have.property("text", "File 2 has been modified");
-      expect(context).to.be.an("object").with.keys("concurrency", "cwd", "debug", "dev", "log");
     }
     finally {
       process.exit();
     }
   });
 
-  it("should call the onError handler when an error occurs", async () => {
+  it('should emit the "error" event when an error occurs', async () => {
     let spy = global.spy = sinon.spy();
 
     let dir = await createDir([
@@ -147,8 +157,12 @@ describe("Events", () => {
         contents: `
           module.exports = {
             source: "**/*.txt",
-            onError: global.spy,
             plugins: [
+              {
+                initialize () {
+                  this.engine.on("error", global.spy);
+                }
+              },
               function badPlugin() {
                 throw new RangeError("Boom!");
               }
@@ -169,14 +183,13 @@ describe("Events", () => {
     sinon.assert.calledOnce(spy);
     expect(spy.firstCall.thisValue[Symbol.toStringTag]).to.equal("CodeEngine");
 
-    let [error, context] = spy.firstCall.args;
-    sinon.assert.calledWithExactly(spy, error, context);
+    let [error] = spy.firstCall.args;
+    sinon.assert.calledWithExactly(spy, error);
     expect(error).to.be.an.instanceOf(RangeError);
     expect(error.message).to.equal("An error occurred in badPlugin while processing file.txt. \nBoom!");
-    expect(context).to.be.an("object").with.keys("concurrency", "cwd", "debug", "dev", "log");
   });
 
-  it("should call the onLog handler when a message is logged", async () => {
+  it('should emit the "log" event when a message is logged', async () => {
     let spy = global.spy = sinon.spy();
 
     let dir = await createDir([
@@ -185,8 +198,12 @@ describe("Events", () => {
         contents: `
           module.exports = {
             source: "**/*.txt",
-            onLog: global.spy,
             plugins: [
+              {
+                initialize () {
+                  this.engine.on("log", global.spy);
+                }
+              },
               function logger(file, { log }) {
                 log("This is a log message", { foo: "bar" });
                 return file;
@@ -208,14 +225,13 @@ describe("Events", () => {
     sinon.assert.calledOnce(spy);
     expect(spy.firstCall.thisValue[Symbol.toStringTag]).to.equal("CodeEngine");
 
-    let [log, context] = spy.firstCall.args;
-    sinon.assert.calledWithExactly(spy, log, context);
+    let [log] = spy.firstCall.args;
+    sinon.assert.calledWithExactly(spy, log);
     expect(log).to.deep.equal({
       level: "info",
       message: "This is a log message",
       foo: "bar"
     });
-    expect(context).to.be.an("object").with.keys("concurrency", "cwd", "debug", "dev", "log");
   });
 
 });

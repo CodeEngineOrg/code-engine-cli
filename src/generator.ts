@@ -57,7 +57,7 @@ export interface Generator {
  */
 export interface WatchConfig {
   /**
-   * The time (in milliseconds) to wait after a file change is detected before starting a build.
+   * The time (in milliseconds) to wait after a file change is detected before starting a new run.
    * This allows multiple files that are changed together to all be re-built together.
    *
    * Defaults to 300ms.

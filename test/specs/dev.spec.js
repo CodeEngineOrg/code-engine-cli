@@ -25,8 +25,8 @@ describe("code-engine --dev", () => {
       {
         path: "my-plugin.js",
         contents: `
-          module.exports = function myPlugin(file, context) {
-            file.text = context.dev ? "The dev flag is set" : "The dev flag is NOT set";
+          module.exports = function myPlugin(file, run) {
+            file.text = run.dev ? "The dev flag is set" : "The dev flag is NOT set";
             return file;
           }
         `
@@ -59,8 +59,8 @@ describe("code-engine --dev", () => {
       {
         path: "my-plugin.js",
         contents: `
-          module.exports = function myPlugin(file, context) {
-            file.text = context.dev ? "The dev flag is set" : "The dev flag is NOT set";
+          module.exports = function myPlugin(file, run) {
+            file.text = run.dev ? "The dev flag is set" : "The dev flag is NOT set";
             return file;
           }
         `
@@ -93,8 +93,8 @@ describe("code-engine --dev", () => {
       {
         path: "my-plugin.js",
         contents: `
-          module.exports = function myPlugin(file, context) {
-            file.text = context.dev ? "The dev flag is set" : "The dev flag is NOT set";
+          module.exports = function myPlugin(file, run) {
+            file.text = run.dev ? "The dev flag is set" : "The dev flag is NOT set";
             return file;
           }
         `
@@ -128,8 +128,8 @@ describe("code-engine --dev", () => {
       {
         path: "my-plugin.js",
         contents: `
-          module.exports = function myPlugin(file, context) {
-            file.text = context.dev ? "The dev flag is set" : "The dev flag is NOT set";
+          module.exports = function myPlugin(file, run) {
+            file.text = run.dev ? "The dev flag is set" : "The dev flag is NOT set";
             return file;
           }
         `

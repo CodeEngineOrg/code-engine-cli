@@ -192,7 +192,7 @@ describe("code-engine [sources...]", () => {
     await cli.main();
 
     process.assert.stderr(
-      "An error occurred in Filesystem Source while reading source files. \n" +
+      "An error occurred in Filesystem Source while it was initializing. \n" +
       `ENOENT: no such file or directory, stat '${join(dir, "file.txt")}'\n`
     );
     process.assert.exitCode(1);
@@ -207,7 +207,7 @@ describe("code-engine [sources...]", () => {
     await cli.main([".", "file.txt"]);
 
     process.assert.stderr(
-      "An error occurred in Filesystem Source while reading source files. \n" +
+      "An error occurred in Filesystem Source while it was initializing. \n" +
       `ENOENT: no such file or directory, stat '${join(dir, "file.txt")}'\n`
     );
     process.assert.exitCode(1);

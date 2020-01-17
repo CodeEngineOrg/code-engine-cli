@@ -1,5 +1,5 @@
 import CodeEngine from "@code-engine/lib";
-import { BuildContext, BuildSummary, EventName, LogEventData, LogLevel } from "@code-engine/types";
+import { EventName, LogEventData, LogLevel, Run, Summary } from "@code-engine/types";
 import * as filesize from "filesize";
 import { CodeEngineCLI } from "./cli";
 import { LoadedGenerator } from "./load-generator";
@@ -14,8 +14,8 @@ export function setupEvents(engine: CodeEngine, generator: LoadedGenerator, cli:
 
   if (!options.quiet) {
     engine.on(EventName.Log, printToConsole(cli, options));
-    engine.on(EventName.BuildStarting, printChangedFiles(cli, options));
-    engine.on(EventName.BuildFinished, printBuildSummary(cli));
+    engine.on(EventName.Start, printChangedFiles(cli, options));
+    engine.on(EventName.Finish, printSummary(cli));
   }
 }
 
@@ -49,11 +49,11 @@ function printToConsole(cli: CodeEngineCLI, options: ParsedArgs) {
 }
 
 /**
- * Prints the file changes that triggered a re-build
+ * Prints the file changes that triggered a re-run
  */
 function printChangedFiles(cli: CodeEngineCLI, options: ParsedArgs) {
-  return ({ partialBuild, changedFiles }: BuildContext) => {
-    if (partialBuild) {
+  return ({ partial, changedFiles }: Run) => {
+    if (partial) {
       let message = `\n${changedFiles.length} files changed`;
 
       if (options.debug) {
@@ -66,10 +66,10 @@ function printChangedFiles(cli: CodeEngineCLI, options: ParsedArgs) {
 }
 
 /**
- * Prints a summary of a finished build
+ * Prints a summary of a finished run
  */
-function printBuildSummary(cli: CodeEngineCLI) {
-  return ({ input, output, time }: BuildSummary) => {
+function printSummary(cli: CodeEngineCLI) {
+  return ({ input, output, time }: Summary) => {
     let message =
     `input:  ${input.fileCount} files (${filesize(input.fileSize)})\n` +
     `output: ${output.fileCount} files (${filesize(output.fileSize)})\n` +

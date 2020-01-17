@@ -116,7 +116,7 @@ describe("Destination", () => {
     expect(join(dir, "this/is/the/output/directory/sub/dir/file.txt")).to.be.a.file().with.contents("Helloooooooo");
   });
 
-  it('should clean the "dist" directory before building', async () => {
+  it('should clean the "dist" directory before running', async () => {
     let dir = await createDir([
       { path: "index.js", contents: "" },
       { path: "src/file.txt", contents: "Hello, world!" },
@@ -151,7 +151,7 @@ describe("Destination", () => {
     expect(join(dir, "dist/sub/dir/file.txt")).to.be.a.file().with.contents("Helloooooooo");
   });
 
-  it("should clean the destination directory before building", async () => {
+  it("should clean the destination directory before running", async () => {
     let dir = await createDir([
       {
         path: "index.js",

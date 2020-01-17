@@ -105,7 +105,7 @@ describe("cwd", () => {
     await cli.main();
 
     process.assert.stderr(
-      "An error occurred in Filesystem Source while reading source files. \n" +
+      "An error occurred in Filesystem Source while it was initializing. \n" +
       `ENOENT: no such file or directory, stat '${join(dir, "this/path/does/not/exist")}'\n`
     );
     process.assert.exitCode(1);
