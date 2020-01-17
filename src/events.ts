@@ -12,12 +12,6 @@ import { ParsedArgs } from "./parse-args";
 export function setupEvents(engine: CodeEngine, generator: LoadedGenerator, cli: CodeEngineCLI, options: ParsedArgs) {
   engine.on(EventName.Error, error(cli, engine));
 
-  generator.onBuildStarting && engine.on(EventName.BuildStarting, generator.onBuildStarting);
-  generator.onBuildFinished && engine.on(EventName.BuildFinished, generator.onBuildFinished);
-  generator.onFileChanged && engine.on(EventName.FileChanged, generator.onFileChanged);
-  generator.onError && engine.on(EventName.Error, generator.onError);
-  generator.onLog && engine.on(EventName.Log, generator.onLog);
-
   if (!options.quiet) {
     engine.on(EventName.Log, printToConsole(cli, options));
     engine.on(EventName.BuildStarting, printChangedFiles(cli, options));
