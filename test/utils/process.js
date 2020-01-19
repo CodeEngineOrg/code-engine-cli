@@ -5,11 +5,20 @@ const sinon = require("sinon");
 let processes = [];
 
 afterEach("Cleanup mock processes", () => {
+  // Terminate any MockProcess objects that were created.
+  // This ensures that tests don't hang due pending promises.
   for (let process of processes) {
     process.exit();
   }
 
   processes = [];
+});
+
+after("Failsafe exit", () => {
+  // As a failsafe mesure against hangs, exit the process if it's still running
+  // a minute after all tests finish
+  let timer = setTimeout(process.exit, 60000);
+  timer.unref();
 });
 
 /**
