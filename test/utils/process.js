@@ -2,11 +2,22 @@
 
 const sinon = require("sinon");
 
+let processes = [];
+
+afterEach("Cleanup mock processes", () => {
+  for (let process of processes) {
+    process.exit();
+  }
+
+  processes = [];
+});
+
 /**
  * A mock object that replaces Node's built-in `process` object.
  */
 module.exports = class MockProcess {
   constructor (cwd = process.cwd()) {
+    processes.push(this);
     this.env = {};
 
     this.cwd = sinon.stub().returns(cwd);

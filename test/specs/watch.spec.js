@@ -13,17 +13,11 @@ const RUN_TIME = process.env.CI ? 800 : 500;
 const WATCH_DELAY = process.env.CI ? 300 : 100;
 
 describe("code-engine --watch", () => {
-  let process;
-
   beforeEach(function () {
     this.currentTest.timeout(60000);
   });
 
-  afterEach(() => {
-    process.exit();
-  });
-
-  it("should re-run when source files change", async () => {
+  it.only("should re-run when source files change", async () => {
     let dir = await createDir([
       {
         path: "index.js",
@@ -40,7 +34,7 @@ describe("code-engine --watch", () => {
       { path: "src/sub/dir/file3.txt", contents: "This is file 3" },
     ]);
 
-    process = new MockProcess(dir);
+    let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
@@ -105,7 +99,7 @@ describe("code-engine --watch", () => {
       { path: "src/sub/dir/file3.txt", contents: "This is file 3" },
     ]);
 
-    process = new MockProcess(dir);
+    let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
@@ -195,7 +189,7 @@ describe("code-engine --watch", () => {
       { path: "src/sub/dir/file3.txt", contents: "This is file 3" },
     ]);
 
-    process = new MockProcess(dir);
+    let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
@@ -258,7 +252,7 @@ describe("code-engine --watch", () => {
       { path: "src/sub/dir/file3.txt", contents: "This is file 3" },
     ]);
 
-    process = new MockProcess(dir);
+    let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
@@ -396,7 +390,7 @@ describe("code-engine --watch", () => {
       "src/file1.txt",
     ]);
 
-    process = new MockProcess(dir);
+    let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
@@ -442,7 +436,7 @@ describe("code-engine --watch", () => {
       "src/file1.txt",
     ]);
 
-    process = new MockProcess(dir);
+    let process = new MockProcess(dir);
     let cli = new CodeEngineCLI({ manifest, process });
     cli.main(["--watch"]);
 
