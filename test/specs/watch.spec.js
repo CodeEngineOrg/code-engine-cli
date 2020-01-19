@@ -17,7 +17,7 @@ describe("code-engine --watch", () => {
     this.currentTest.timeout(60000);
   });
 
-  it.only("should re-run when source files change", async () => {
+  it("should re-run when source files change", async () => {
     let dir = await createDir([
       {
         path: "index.js",
