@@ -1,7 +1,7 @@
 import { importModule, ModuleExports, resolveModule } from "@code-engine/utils";
 import { validate } from "@code-engine/validate";
+import { ono } from "@jsdevtools/ono";
 import { promises as fs } from "fs";
-import { ono } from "ono";
 import { dirname, resolve } from "path";
 import { Generator } from "./generator";
 import { ParsedArgs } from "./parse-args";

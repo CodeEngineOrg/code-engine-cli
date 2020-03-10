@@ -4,14 +4,15 @@ const { CodeEngineCLI } = require("../../lib");
 const manifest = require("../../package.json");
 const MockProcess = require("../utils/process");
 const { delay, createDir } = require("../utils");
+const { host } = require("@jsdevtools/host-environment");
 const sinon = require("sinon");
 const { expect } = require("chai");
 const { join } = require("path");
 const { promises: fs } = require("fs");
 
 // CI environments are slow, so use a larger time buffer
-const RUN_TIME = process.env.CI ? 800 : 500;
-const WATCH_DELAY = process.env.CI ? 300 : 100;
+const RUN_TIME = host.ci ? 800 : 500;
+const WATCH_DELAY = host.ci ? 300 : 100;
 
 describe("Events", () => {
 
