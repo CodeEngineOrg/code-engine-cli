@@ -1,8 +1,8 @@
 CodeEngine CLI
 ======================================
 
-[![Cross-Platform Compatibility](https://engine.codes/img/badges/os-badges.svg)](https://travis-ci.com/CodeEngineOrg/code-engine-cli)
-[![Build Status](https://api.travis-ci.com/CodeEngineOrg/code-engine-cli.svg?branch=master)](https://travis-ci.com/CodeEngineOrg/code-engine-cli)
+[![Cross-Platform Compatibility](https://engine.codes/img/badges/os-badges.svg)](https://github.com/CodeEngineOrg/code-engine-cli/blob/master/.github/workflows/CI-CD.yaml)
+[![Build Status](https://github.com/CodeEngineOrg/code-engine-cli/workflows/CI-CD/badge.svg)](https://github.com/CodeEngineOrg/code-engine-cli/blob/master/.github/workflows/CI-CD.yaml)
 
 [![Coverage Status](https://coveralls.io/repos/github/CodeEngineOrg/code-engine-cli/badge.svg?branch=master)](https://coveralls.io/github/CodeEngineOrg/code-engine-cli)
 [![Dependencies](https://david-dm.org/CodeEngineOrg/code-engine-cli.svg)](https://david-dm.org/CodeEngineOrg/code-engine-cli)
