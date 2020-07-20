@@ -82,7 +82,7 @@
   "dependencies": {
     "@code-engine/lib": "^1.0.0",
     "@code-engine/utils": "^1.0.0",
-    "@code-engine/validate": "^1.0.1",
+    "@jsdevtools/assert": "^1.0.1",
     "code-engine-destination-filesystem": "^1.0.0",
     "code-engine-source-filesystem": "^1.0.0",
     "command-line-args": "^5.1.1",

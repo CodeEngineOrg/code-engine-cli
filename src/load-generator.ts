@@ -1,5 +1,5 @@
 import { importModule, ModuleExports, resolveModule } from "@code-engine/utils";
-import { validate } from "@code-engine/validate";
+import { assert } from "@jsdevtools/assert";
 import { ono } from "@jsdevtools/ono";
 import { promises as fs } from "fs";
 import { dirname, resolve } from "path";
@@ -111,7 +111,7 @@ async function importGenerator(path: string, moduleId = path): Promise<Generator
   let generator = (exports.generator || exports.default || exports) as Generator;
 
   // Make sure it's an object
-  validate.type.object(generator, "CodeEngine generator");
+  assert.type.object(generator, "CodeEngine generator");
 
   // Shallow clone the generator so we can safely add/modify properties
   return { ...generator };

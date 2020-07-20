@@ -1,4 +1,4 @@
-import validate from "@code-engine/validate";
+import { assert } from "@jsdevtools/assert";
 import * as updateNotifier from "update-notifier";
 import { Config, Manifest } from "./config";
 import { ExitCode } from "./exit-code";
@@ -21,13 +21,13 @@ export class CodeEngineCLI {
   private _debug = false;
 
   public constructor(config: Config) {
-    validate.type.object(config, "CLI config");
+    assert.type.object(config, "CLI config");
 
     // Validate the CLI manifest
-    this._manifest = validate.type.object(config.manifest, "CLI manifest");
-    validate.string.nonWhitespace(config.manifest.name, "CLI name");
-    validate.string.nonWhitespace(config.manifest.version, "CLI version");
-    validate.string.nonWhitespace(config.manifest.description, "CLI description");
+    this._manifest = assert.type.object(config.manifest, "CLI manifest");
+    assert.string.nonWhitespace(config.manifest.name, "CLI name");
+    assert.string.nonWhitespace(config.manifest.version, "CLI version");
+    assert.string.nonWhitespace(config.manifest.description, "CLI description");
 
     // Use a custom Process object, if provided. Otherwise, use the real one.
     this._process = config.process || process;
