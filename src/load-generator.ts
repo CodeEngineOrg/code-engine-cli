@@ -66,7 +66,7 @@ async function resolveSource(cwd: string): Promise<string> {
     await dir.close();
   }
   catch (error) {
-    throw ono(error, `No source was specified, and no "./src" directory was found.`);
+    throw ono(error, "No source was specified, and no \"./src\" directory was found.");
   }
 
   return "./src/**/*";
@@ -78,9 +78,7 @@ async function resolveSource(cwd: string): Promise<string> {
 function resolveGenerator(cwd: string, options: ParsedArgs): string {
   // Temporarily register TypeScript file extensions.
   // This allows the resolveModule() function to find TypeScript modules
-  require.extensions[".ts"] = dummyTypeScriptResolver;        // tslint:disable-line: deprecation
-  require.extensions[".tsx"] = dummyTypeScriptResolver;       // tslint:disable-line: deprecation
-
+  require.extensions[".ts"] = dummyTypeScriptResolver; require.extensions[".tsx"] = dummyTypeScriptResolver;
   let generatorPath = resolveModule(options.generator || ".", cwd);
 
   if (!generatorPath) {
@@ -88,9 +86,7 @@ function resolveGenerator(cwd: string, options: ParsedArgs): string {
   }
 
   // Remove the dummy TypeScript resolvers
-  delete require.extensions[".ts"];                           // tslint:disable-line: deprecation
-  delete require.extensions[".tsx"];                          // tslint:disable-line: deprecation
-
+  delete require.extensions[".ts"]; delete require.extensions[".tsx"];
   return generatorPath;
 }
 
@@ -120,4 +116,4 @@ async function importGenerator(path: string, moduleId = path): Promise<Generator
 /**
  * A dummy TypeScript resolver that's used
  */
-function dummyTypeScriptResolver(): void {}  // tslint:disable-line: no-empty
+function dummyTypeScriptResolver(): void {}

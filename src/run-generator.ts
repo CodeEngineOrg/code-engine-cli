@@ -51,7 +51,7 @@ export async function runGenerator(generator: LoadedGenerator, cli: CodeEngineCL
 /**
  * Adds the CodeEngine plugins that are specified by the generator
  */
-async function addPlugins(engine: CodeEngine, generator: Generator, options: ParsedArgs) {
+async function addPlugins(engine: CodeEngine, generator: Generator, _options: ParsedArgs) {
   // Add file sources
   for (let source of arrayify(generator.source)) {
     if (typeof source === "string") {

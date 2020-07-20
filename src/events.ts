@@ -10,7 +10,7 @@ import { ParsedArgs } from "./parse-args";
  * @internal
  */
 export function setupEvents(engine: CodeEngine, generator: LoadedGenerator, cli: CodeEngineCLI, options: ParsedArgs) {
-  engine.on(EventName.Error, error(cli, engine));
+  engine.on(EventName.Error, error(cli, engine));   // eslint-disable-line @typescript-eslint/no-misused-promises
 
   if (!options.quiet) {
     engine.on(EventName.Log, printToConsole(cli, options));
@@ -23,7 +23,7 @@ export function setupEvents(engine: CodeEngine, generator: LoadedGenerator, cli:
  * Safely terminates the program when an error occurs in CodeEngine.
  */
 function error(cli: CodeEngineCLI, engine: CodeEngine) {
-  return async (err: Error) => {
+  return async(err: Error) => {
     await engine.dispose();
     cli.crash(err);
   };
@@ -32,7 +32,7 @@ function error(cli: CodeEngineCLI, engine: CodeEngine) {
 /**
  * Prints log messages to the console
  */
-function printToConsole(cli: CodeEngineCLI, options: ParsedArgs) {
+function printToConsole(cli: CodeEngineCLI, _options: ParsedArgs) {
   return ({ level, message }: LogEventData) => {
     switch (level) {
       case LogLevel.Error:

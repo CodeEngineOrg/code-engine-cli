@@ -25,7 +25,7 @@ describe("code-engine [generator]", () => {
     process.assert.exitCode(0);
 
     expect(join(dir, "dist")).to.be.a.directory().with.deep.contents(["file.txt"]);
-    expect(join(dir, "dist/file.txt")).to.be.a.file().and.empty;
+    expect(join(dir, "dist/file.txt")).to.be.a.file().and.empty;    // eslint-disable-line no-unused-expressions
   });
 
   it("should use the generator specified by directory path", async () => {

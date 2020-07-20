@@ -1,4 +1,3 @@
-// tslint:disable: no-default-export
 import * as findUp from "find-up";
 import { dirname } from "path";
 import * as sourceMapSupport from "source-map-support";
@@ -60,7 +59,7 @@ async function enableTypeScript(generatorPath: string): Promise<void> {
     };
   }
 
-  tsNode!.register(tsConfig);
+  tsNode.register(tsConfig);
 }
 
 /**
